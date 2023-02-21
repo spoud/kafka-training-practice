@@ -5,7 +5,6 @@
 1. start the connect-worker and its dependencies  
    `docker-compose up zookeeper broker connect schema-registry`
 2. install the plugins we are going to use  
-3. `docker-compose exec `
 
 ## Installing Connector Plugins
 
@@ -14,7 +13,8 @@
 * we install the JDBC connector to create a JDBC sink
   
       docker-compose exec connect bash
-      confluent-hub install confluentinc/kafka-connect-jdbc:10.6.3
+      confluent-hub install confluentinc/kafka-connect-elasticsearch:latest
+ 
 * plugin is loaded after when the connect worker restarts 
 
       curl localhost:8083/connector-plugins
@@ -23,6 +23,25 @@
 ## Configuring Source and Sink Connectors
 
 
+* Source connector
+
+      curl -X PUT -H "Content-Type: application/json" --data @source-connector.json localhost:8083/connectors/source/config | jq
+
+      curl localhost:8083/connectors/source/status | jq
+
+* Check topic contents
+
+      kafka-console-consumer --bootstrap-server localhost:9092 --topic purchases --from-beginning --property print.key=true
+
+* Sink connector
+
+      curl -X PUT -H "Content-Type: application/json" --data @sink-connector.json localhost:8083/connectors/sink/config | jq
+
+      curl localhost:8083/connectors/sink/status | jq
+
+* curl 'http://localhost:9200/es-sink/_search?pretty'
+* http://localhost:5601/app/home#/
+    
 
 ## Tear Down
 

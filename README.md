@@ -19,6 +19,7 @@ In this folder you find demos to show how to use Kafka.
 In this folder you find some resources to use in the exercises and demos in a central place.
 
 
+
 ## Startup Kafka cluster
 
 docker-compose up -d 
