@@ -66,3 +66,5 @@ nb-configuration.xml
 .sdkmanrc
 .envrc
 .jekyll-cache
+
+docker-compose.yml
