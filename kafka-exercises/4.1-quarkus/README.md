@@ -2,8 +2,8 @@
 ## Produce
 
 * create a new quarkus project with
-  ** smallrye-reactive-messaging-kafka
-  ** quarkus-resteasy-reactive
+  * smallrye-reactive-messaging-kafka
+  * quarkus-resteasy-reactive
 * Write a simple REST endpoint that sends a message to a Kafka topic
 * Make sure the REST service is responding with error if the message could not be sent to Kafka
 
