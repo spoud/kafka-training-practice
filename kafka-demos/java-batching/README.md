@@ -1,0 +1,49 @@
+# Play with batching in Kafka
+
+This demo shows how to use batching in Kafka. It is a simple producer and consumer that sends and receives messages in batches.
+
+We also demonstrate compression which is done on a per batch base.
+
+
+Producer properties
+
+```java
+        props.put("compression.type", "gzip");
+        props.put("batch.size", 1638400);
+        props.put("linger.ms", 5000);
+
+```
+
+* compression.type: gzip ensures that many messages get into the batch
+* batch.size: 1638400 is the maximum size of the batch in bytes
+* linger.ms: 5000 is the maximum time to wait for more messages to arrive before sending the batch
+
+With this some 10k messages should go into a batch.
+
+
+On consumer side observe how many records you get in one poll with the following property:
+
+```java
+        props.put("max.poll.records", 500);
+```
+
+You will notice that you get only 500 records in one poll. But looking into 
+`org.apache.kafka.clients.consumer.internals.Fetcher.CompletedFetch.fetchRecords` and
+`org.apache.kafka.clients.consumer.internals.Fetcher.CompletedFetch.nextFetchedRecord`
+you can see that the batch returned from the broker is actually split into 500 records.
+
+![screenshot.png](screenshot.png)
+
+You see the RecordBatch with an offset range from 0  to 50580 records that are returned from the fetch request.
+
+
+## How to run
+
+* Start kafka
+* Create topic
+* Set the topic name in producer and consumer
+* Run the producer
+* Run the consumer
+* Observe the output
+* Eventually set some breakpoints in the code to see what happens
+* Experiment with different batch sizes and compression types and the other settings
