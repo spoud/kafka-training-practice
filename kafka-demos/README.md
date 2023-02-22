@@ -2,7 +2,8 @@
 
 List of demos:
 
-* java producer batching / consumer
+* java batching / producer and consumer
+* java default partitioning / key space
 * consumer poll loop stuck / pause unpause
 * Schema registry with control center
 * 
