@@ -1,0 +1,12 @@
+{
+  "connector.class": "io.confluent.kafka.connect.datagen.DatagenConnector",
+  "kafka.topic": "purchases",
+  "quickstart": "purchases",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "io.confluent.connect.avro.AvroConverter",
+  "value.converter.schema.registry.url": "http://schema-registry:8081",
+  "value.converter.schemas.enable": "false",
+  "value.converter.decimal.format": "NUMERIC",
+  "max.interval": 1000,
+  "tasks.max": "1"
+}
