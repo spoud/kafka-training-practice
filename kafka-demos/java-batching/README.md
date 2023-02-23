@@ -30,12 +30,14 @@ On consumer side observe how many records you get in one poll with the following
 You will notice that you get only 500 records in one poll. But looking into 
 `org.apache.kafka.clients.consumer.internals.Fetcher.CompletedFetch.fetchRecords` and
 `org.apache.kafka.clients.consumer.internals.Fetcher.CompletedFetch.nextFetchedRecord`
-you can see that the batch returned from the broker is actually split into 500 records.
+you can see that the batch returned from the broker is actually split into chunks of 500 records.
 
 ![screenshot.png](screenshot.png)
 
 You see the RecordBatch with an offset range from 0  to 50580 records that are returned from the fetch request.
 
+On the RecordBatch you see the `compression=gzip` which means that the whole batch was compressed with gzip.
+See also https://kafka.apache.org/11/documentation.html#recordbatch.
 
 ## How to run
 

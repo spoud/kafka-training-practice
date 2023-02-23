@@ -19,20 +19,21 @@ In this folder you find demos to show how to use Kafka.
 In this folder you find some resources to use in the exercises and demos in a central place.
 
 
-
 ## Startup Kafka cluster
 
 docker-compose up -d 
 
 # Ports used
 
-| Service | Port |
-| --- |------|
+| Service                  | Port |
+|--------------------------|------|
 | Confluent Control Center | 9021 |
-| Zookeeper | 2181 |
-| Kafka | 9092 |
-| Schema Registry | 8081 |
-| Kafka Connect | 8083 |
-| Kafka REST Proxy | 8082 |
-| KsqlDB Server | 8088 |
-| Crappy echo service | 7980 |
+| Zookeeper                | 2181 |
+| Kafka                    | 9092 |
+| Schema Registry          | 8081 |
+| Kafka Connect            | 8083 |
+| Kafka REST Proxy         | 8082 |
+| KsqlDB Server            | 8088 |
+| Crappy echo service      | 7980 |
+| Quarkush http server     | 7981 |
+| Quarkus test server      | 7982 |
