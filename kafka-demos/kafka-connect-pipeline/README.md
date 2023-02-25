@@ -9,7 +9,7 @@
 ## Installing Connector Plugins
 
 * The Datagen Source Connector is already present in our connect-worker  
-  `curl localhost:8083/connector-plugins`
+  `curl localhost:8083/connector-plugins | jq`
 * we install the JDBC connector to create a JDBC sink
   
       docker-compose exec connect bash
@@ -17,7 +17,7 @@
  
 * plugin is loaded after when the connect worker restarts 
 
-      curl localhost:8083/connector-plugins
+      curl localhost:8083/connector-plugins | jq
       docker-compose restart connect
 
 ## Configuring Source and Sink Connectors
@@ -42,6 +42,10 @@
 * curl 'http://localhost:9200/es-sink/_search?pretty'
 * http://localhost:5601/app/home#/
     
+
+## Delete a connector
+
+      curl -X DELETE localhost:8083/connectors/sink
 
 ## Tear Down
 

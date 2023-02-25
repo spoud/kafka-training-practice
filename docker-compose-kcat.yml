@@ -1,0 +1,10 @@
+---
+version: '2'
+services:
+  kcat:
+    image: edenhill/kcat:1.7.1
+    hostname: kcat
+    container_name: kcat
+    depends_on:
+      - broker
+    entrypoint: ["/bin/sh", "-c", "tail -f /dev/null"]

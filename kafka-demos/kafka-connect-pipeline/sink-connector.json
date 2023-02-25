@@ -4,5 +4,12 @@
   "topics": "purchases",
   "key.ignore": "true",
   "connection.url": "http://elasticsearch:9200",
-  "type.name": "kafka-connect"
+  "type.name": "kafka-connect",
+  "transforms":"InsertMessageTime,ConvertTimeValue",
+  "transforms.InsertMessageTime.type":"org.apache.kafka.connect.transforms.InsertField$Value",
+  "transforms.InsertMessageTime.timestamp.field":"timestamp",
+  "transforms.ConvertTimeValue.type": "org.apache.kafka.connect.transforms.TimestampConverter$Value",
+  "transforms.ConvertTimeValue.target.type": "string",
+  "transforms.ConvertTimeValue.field": "timestamp",
+  "transforms.ConvertTimeValue.format": "yyyy-MM-dd'T'HH:mm:ss.S'Z'"
 }

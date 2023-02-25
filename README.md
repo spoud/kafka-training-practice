@@ -34,6 +34,10 @@ docker-compose up -d
 | Kafka Connect            | 8083 |
 | Kafka REST Proxy         | 8082 |
 | KsqlDB Server            | 8088 |
+| AKHQ                     | 8089 |
 | Crappy echo service      | 7980 |
 | Quarkush http server     | 7981 |
 | Quarkus test server      | 7982 |
+ | Kibana                   | 5601 |
+ | Elasticsearch            | 9200 |
+

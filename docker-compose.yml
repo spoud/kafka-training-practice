@@ -175,39 +175,3 @@ services:
       KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
       KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
 
-
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.1
-    container_name: elasticsearch
-    environment:
-      - xpack.security.enabled=false
-      - discovery.type=single-node
-    mem_limit: "4GB"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
-    cap_add:
-      - IPC_LOCK
-    volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-
-  kibana:
-    container_name: kibana
-    image: docker.elastic.co/kibana/kibana:8.6.1
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    ports:
-      - "5601:5601"
-    depends_on:
-      - elasticsearch
-
-volumes:
-  elasticsearch-data:
-    driver: local
