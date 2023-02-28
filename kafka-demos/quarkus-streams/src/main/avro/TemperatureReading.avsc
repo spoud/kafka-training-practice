@@ -1,0 +1,20 @@
+{
+  "type": "record",
+  "name": "TemperatureReading",
+  "namespace": "io.spoud.training",
+  "fields": [
+    {
+      "name": "stationId",
+      "type": "int"
+    },
+    {
+      "name": "stationName",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "temperature",
+      "type": "double"
+    }
+  ]
+}

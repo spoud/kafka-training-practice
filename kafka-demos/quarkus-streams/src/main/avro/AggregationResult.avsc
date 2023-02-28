@@ -1,0 +1,24 @@
+{
+  "type": "record",
+  "name": "AggregationResult",
+  "namespace": "io.spoud.training",
+  "fields": [
+    {"name": "stationId", "type": "int"},
+    {"name": "stationName", "type": "string"},
+    {"name": "min", "type": "double",
+      "default": 9999999
+    },
+    {"name": "max", "type": "double",
+      "default": -9999999
+    },
+    {"name": "count", "type": "int",
+      "default": 0
+    },
+    {"name": "sum", "type": "double",
+      "default": 0
+    },
+    {"name": "avg", "type": "double",
+      "default": 0
+    }
+  ]
+}
