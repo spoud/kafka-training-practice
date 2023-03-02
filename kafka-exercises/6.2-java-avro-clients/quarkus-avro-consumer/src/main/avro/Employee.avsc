@@ -1,0 +1,35 @@
+{
+  "type": "record",
+  "name": "Employee",
+  "namespace": "io.spoud.training",
+  "fields": [
+    {
+      "name": "shortCode",
+      "type": "string"
+    },
+    {
+      "name": "firstName",
+      "type": "string"
+    },
+    {
+      "name": "startDate",
+      "type": {
+        "type": "int",
+        "logicalType": "date"
+      }
+    },
+    {
+      "name": "role",
+      "type": {
+        "type": "enum",
+        "name": "JobRole",
+        "symbols": [
+          "SW_ENGINEER",
+          "KAFKA_SPECIALIST",
+          "ML_ENGINEER"
+        ],
+        "default": "SW_ENGINEER"
+      }
+    }
+  ]
+}

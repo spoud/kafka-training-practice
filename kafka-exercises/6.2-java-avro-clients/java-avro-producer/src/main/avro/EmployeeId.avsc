@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "EmployeeId",
+  "namespace": "io.spoud.training",
+  "fields": [
+    {
+      "name": "shortCode",
+      "type": "string"
+    }
+  ]
+}
