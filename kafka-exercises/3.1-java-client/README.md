@@ -4,16 +4,14 @@
 * Add the following dependencies to your pom.xml:
 
 
-[source,xml]
-----
+```xml
 <dependency>
     <groupId>org.apache.kafka</groupId>
     <artifactId>kafka-clients</artifactId>
     <version>3.4.0</version>
 </dependency>
-----
 
-image::assets/frank-gif.gif[width=400, float='left']
+```
 
 // TODO should we use the driver positions thing here?
 * Create a producer that sends some messages to a topic on your local kafka instance
@@ -25,3 +23,21 @@ image::assets/frank-gif.gif[width=400, float='left']
 * implement a rebalance listener, so you can clear the list of keys when a rebalance happens
 
 // TODO should we include testing?
+
+Make sure logging is working by adding the following dependencies
+
+```xml
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.5</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>2.0.5</version>
+      <scope>compile</scope>
+    </dependency>
+```
