@@ -1,4 +1,4 @@
-# Java CLients with AVRO
+# Java Clients with AVRO
 
 In this exercise you will work with
 
