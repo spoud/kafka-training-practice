@@ -30,7 +30,7 @@ public class KafkaPingResourceTest {
              .body(is("ok pong-kafka json"));
 
         // verify the message was sent to kafka
-        ConsumerTask<String, String> pingMessages = companion.consumeStrings().fromTopics("kaf-demo-ping-json", 1, Duration.ofSeconds(10));
+        ConsumerTask<String, String> pingMessages = companion.consumeStrings().fromTopics("kaf-demo-ping-json-3", 1, Duration.ofSeconds(10));
         pingMessages.awaitCompletion();
         assertEquals(1, pingMessages.count());
 
