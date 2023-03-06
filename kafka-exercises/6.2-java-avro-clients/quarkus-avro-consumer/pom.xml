@@ -4,7 +4,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.spoud.training</groupId>
-    <artifactId>quarkus-avro-consumer</artifactId>
+    <artifactId>6.2-exercise-quarkus-avro-consumer</artifactId>
     <version>1.0-SNAPSHOT</version>
     <properties>
         <compiler-plugin.version>3.10.1</compiler-plugin.version>

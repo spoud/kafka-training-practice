@@ -39,12 +39,12 @@ public class ConsumerTest {
     public void testConsumerIsCallingRestEndpoint() {
         System.out.println("Waiting for consumer to be connected");
         await().timeout(Duration.ofSeconds(60)).until(() -> companion.consumerGroups().list().stream().anyMatch(g -> {
-            int assignedTopicPartitions = companion.consumerGroups().describe("quarkus-consume-call-rest").members().stream().map(m -> m.assignment().topicPartitions().size()).reduce(0, Integer::sum);
+            int assignedTopicPartitions = companion.consumerGroups().describe("4.1-solution-quarkus-consume-call-rest").members().stream().map(m -> m.assignment().topicPartitions().size()).reduce(0, Integer::sum);
             System.out.println("Consumer group " + g.groupId() + " state " + g.state() + " assigned TopicPartitions:  " + assignedTopicPartitions);
-            return g.groupId().equals("quarkus-consume-call-rest") && assignedTopicPartitions > 0;
+            return g.groupId().equals("4.1-solution-quarkus-consume-call-rest") && assignedTopicPartitions > 0;
         }));
         System.out.println("Consumer connected " + companion.consumerGroups().list());
-        ProducerTask producerTask = companion.produceWithSerializers(PingMessageSerializer.class).usingGenerator(i -> new ProducerRecord<>("kaf-demo-ping-json", new PingMessage(999)),1);
+        ProducerTask producerTask = companion.produceWithSerializers(PingMessageSerializer.class).usingGenerator(i -> new ProducerRecord<>("kaf-demo-ping-json-3", new PingMessage(999)),1);
         producerTask.awaitCompletion();
         verify(sampleRestClient, timeout(5000).times(1)).getEchoPingMessage(any(PingMessage.class));
     }

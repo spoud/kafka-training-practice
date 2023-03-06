@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.spoud.training</groupId>
-    <artifactId>java-avro-producer-solution</artifactId>
+    <artifactId>6.2-solution-java-avro-producer</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>java-avro-producer</name>
+    <name>6.2-solution-java-avro-producer</name>
     <description>a kafka producer which sends AVRO serialized messages</description>
 
     <properties>
