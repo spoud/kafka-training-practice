@@ -2,7 +2,7 @@
 
 This project uses Quarkus to configure
 - a producer which generates random temperature readings for weather stations to
-  - weather-stations topic: topic which contains info about all available wether stations
+  - weather-stations topic: topic which contains info about all available weather stations
   - temperature-values topic: a topic with sensor readings from these stations
 - a kafka streams topology to enrich temperature readings with station information and calculate aggregations for each station
   - temperatures-aggregated topic: contains the aggregations for each station

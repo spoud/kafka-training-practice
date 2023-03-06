@@ -11,7 +11,7 @@ kafka-avro-console-producer --bootstrap-server localhost:9092 --property schema.
 
 
 # sending with a key
-kafka-avro-console-producer --bootstrap-server localhost:9092 --topic t2-a \
+kafka-avro-console-producer --bootstrap-server localhost:9092 --topic avro-topic \
   --property parse.key=true \
   --property "key.separator= "\
   --property key.schema='{"type":"string"}' \

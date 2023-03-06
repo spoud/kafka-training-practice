@@ -21,9 +21,9 @@ You find the following two services in this folder:
 ## Check the health status of your application
 
 * navigate to http://localhost:7981/q/health and check the health status of your application
-* bring the Kafka broker down and check the health status again `ocker-compose stop broker`
+* bring the Kafka broker down and check the health status again `docker-compose stop broker`
 * try to send a message and watch the console log
-* bring the Kafka broker up again and check the health status again `ocker-compose start broker`
+* bring the Kafka broker up again and check the health status again `docker-compose start broker`
 
 ## Consume
 
