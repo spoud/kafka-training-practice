@@ -13,7 +13,6 @@
 
 ```
 
-// TODO should we use the driver positions thing here?
 * Create a producer that sends some messages to a topic on your local kafka instance
 * Verify that the messages are in the topic with the command line tools
 * Create a consumer that consumes the messages from the topic
@@ -21,8 +20,6 @@
 * make sure you can serve 3 consumers with the same topic and the same group id
 * remember the last value of each key and print it out when updated
 * implement a rebalance listener, so you can clear the list of keys when a rebalance happens
-
-// TODO should we include testing?
 
 Make sure logging is working by adding the following dependencies
 

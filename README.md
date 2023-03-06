@@ -38,6 +38,8 @@ docker-compose up -d
 | Crappy echo service      | 7980 |
 | Quarkush http server     | 7981 |
 | Quarkus test server      | 7982 |
+| Quarkush http server 2   | 7983 |
+| Quarkus test server 2    | 7984 |
  | Kibana                   | 5601 |
  | Elasticsearch            | 9200 |
 

@@ -1,17 +1,19 @@
 package org.acme;
 
-import io.vertx.core.http.HttpServerRequest;
+import org.jboss.logging.Logger;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
+import java.util.Arrays;
 import java.util.Random;
 
-@Path("/")
-public class GreetingResource {
 
+@Path("/")
+public class EchoResoruce {
+
+    private static final Logger LOG = Logger.getLogger(EchoResoruce.class);
 
     Random random = new Random();
 
@@ -24,14 +26,20 @@ public class GreetingResource {
     @GET
     @Path("/echo")
     public Response echo(byte[] body) {
-        return getCrappyEchoResponse(body);
+        LOG.info("echoPost" + Arrays.toString(body));
+        Response response = getCrappyEchoResponse(body);
+        LOG.info("echoPost" + Arrays.toString(body) + " returning" + response.getStatus());
+        return response;
     }
 
 
     @POST
     @Path("/echo")
     public Response echoPost(byte[] body) {
-        return getCrappyEchoResponse(body);
+        LOG.info("echoPost" + Arrays.toString(body));
+        Response response = getCrappyEchoResponse(body);
+        LOG.info("echoPost" + Arrays.toString(body) + " returning" + response.getStatus());
+        return response;
     }
 
     private Response getCrappyEchoResponse(byte[] body) {
@@ -51,6 +59,7 @@ public class GreetingResource {
                 case 6 -> Response.status(404).build();
                 case 9 -> Response.status(408).build();
                 default -> {
+
                     Thread.sleep(2_000);
                     yield Response.ok().entity(body).build();
                 }

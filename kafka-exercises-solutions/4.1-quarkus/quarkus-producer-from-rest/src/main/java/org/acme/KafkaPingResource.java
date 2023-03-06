@@ -3,10 +3,12 @@ package org.acme;
 import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import io.smallrye.reactive.messaging.kafka.Record;
@@ -28,12 +30,13 @@ public class KafkaPingResource {
     @GET
     @Path("/ping-kafka-json")
     @Produces(MediaType.TEXT_PLAIN)
-    public Response pingKafkaJson() {
-        log.info("ping kafka json");
+    public Response pingKafkaJson(@QueryParam("number") int number) {
+
+        log.info("ping kafka json number: " + number);
 
         PingMessage pingMessage = new PingMessage();
-        pingMessage.setNumber(1);
-        Record<String, PingMessage> msg = Record.of("ping-key", pingMessage);
+        pingMessage.setNumber(number);
+        Record<String, PingMessage> msg = Record.of("ping-key-" + number, pingMessage);
         return Uni.createFrom()
                 .completionStage(pingMessageEmitter.send(msg))
                 .replaceWith(Response.status(Response.Status.OK).entity("ok pong-kafka json").build())
