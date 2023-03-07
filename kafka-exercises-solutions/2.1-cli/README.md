@@ -115,7 +115,7 @@ Solution:
 * `min.cleanable.dirty.ratio=0.01`
 * `segment.ms=60000`
 
-**Caution** The segment.ms setting is bad for production sine it will create a new segment every minute.
+**Caution** The segment.ms setting is bad for production since it will create a new segment every minute.
 
 Solution:
 
