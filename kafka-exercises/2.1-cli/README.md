@@ -15,7 +15,7 @@ When you connect form another container you need to use `broker:29092`.
 
 There is a `kcat` container waiting for you to be used.
 
-    docker-compose exec kcat sh
+    docker-compose -f docker-compose.yml -f docker-compose-kcat.yml  exec kcat sh
 
 Within the container run `kcat` commands like the following listing the metadata:
 
