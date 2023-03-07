@@ -1,3 +1,9 @@
+# Kafka training Mobiliar 7.3.2023
+
+## Slides
+
+https://spoud-training-kafka.s3.eu-central-1.amazonaws.com/iJmczTvW4/index.html
+
 # Get your Kafka practice in hands-on exercises and demos
 
 ## Structure of this repository
