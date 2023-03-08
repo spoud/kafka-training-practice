@@ -2,7 +2,11 @@
 
 ## Slides
 
-https://spoud-training-kafka.s3.eu-central-1.amazonaws.com/iJmczTvW4/index.html
+https://spoud-training-kafka.s3.eu-central-1.amazonaws.com/CjXs20WW7/index.html
+
+## Kafka quiz
+
+https://spoud-training-kafka.s3.eu-central-1.amazonaws.com/CjXs20WW7/kafka-quiz/build/quiz.html
 
 # Get your Kafka practice in hands-on exercises and demos
 
@@ -46,6 +50,6 @@ docker-compose up -d
 | Quarkus test server      | 7982 |
 | Quarkush http server 2   | 7983 |
 | Quarkus test server 2    | 7984 |
- | Kibana                   | 5601 |
- | Elasticsearch            | 9200 |
+| Kibana                   | 5601 |
+| Elasticsearch            | 9200 |
 
