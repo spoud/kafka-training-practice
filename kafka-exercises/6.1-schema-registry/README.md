@@ -35,8 +35,8 @@
 
 5. Produce a message to the topic with this schema:
 
-       kafka-avro-console-producer --bootstrap-server localhost:9092 --property schema.registry.url=http://localhost:8081 --topic cars \
-       --property value.schema.file='car-value-v2.avsc'
+       kafka-avro-console-producer --bootstrap-server broker:29092 --property schema.registry.url=http://localhost:8081 --topic cars \
+       --property value.schema='{"type": "record", "name": "Car", "namespace": "io.spoud.training", "fields": [{"name": "make", "type": "string"}, {"name": "model", "type": "string"}, {"name": "price", "type": "int", "default":  0}]}'
 
    Provide input: `{"make": "Ford", "model": "Mustang", "price": 10000}`, press `ENTER` then end with `CTRL+C`
 
@@ -57,4 +57,4 @@
 
 9. Can you read the v2 message, even when v3 is the latest version?
 
-       kafka-avro-console-consumer --bootstrap-server localhost:9092 --from-beginning --topic cars --property schema.registry.url=http://localhost:8081
+       kafka-avro-console-consumer --bootstrap-server broker:29092 --from-beginning --topic cars --property schema.registry.url=http://localhost:8081
