@@ -58,7 +58,8 @@ Unfortunately the configuration and some annotations got lost...
 # Bonus
 
 * Stop the producer and keep the consumer running
-* Send a message to the topic `employees-avro` using the following command:
-  `kafka-console-producer --topic employees-avro --bootstrap-server localhost:9092`  
-  Then type a string, such as "employee" and hit enter to send the message.
+* Send a message to the topic `employees-avro` using the following commands:
+  * `docker-compose exec broker bash`
+  * `kafka-console-producer --topic employees-avro --bootstrap-server broker:29092`
+  * Then type a string, such as "employee" and hit enter to send the message.
 * What happened to the consumer when it tried to deserialize this message?

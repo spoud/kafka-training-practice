@@ -3,7 +3,8 @@
 ## Prepare Environment
 
 1. start the connect-worker and its dependencies  
-   `docker-compose up zookeeper broker connect schema-registry`
+   `docker-compose up -d zookeeper broker connect schema-registry`
+   `docker-compose -f docker-compose-elk.yml up -d`
 2. install the plugins we are going to use  
 
 ## Installing Connector Plugins
@@ -31,7 +32,7 @@
 
 * Check topic contents
 
-      kafka-console-consumer --bootstrap-server localhost:9092 --topic purchases --from-beginning --property print.key=true
+      kafka-avro-console-consumer --bootstrap-server localhost:9092 --topic purchases --from-beginning --property print.key=false
 
 * Sink connector
 
@@ -49,6 +50,6 @@
 
 ## Tear Down
 
-docker-compose stop
+`docker-compose stop`
 
 
