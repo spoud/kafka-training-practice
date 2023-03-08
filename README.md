@@ -1,12 +1,12 @@
-# Kafka training Mobiliar 7.3.2023
+# Kafka training
 
 ## Slides
 
-https://spoud-training-kafka.s3.eu-central-1.amazonaws.com/CjXs20WW7/index.html
+http://spoud-training-kafka.s3-website.eu-central-1.amazonaws.com/GhPviso7T/index.html
 
 ## Kafka quiz
 
-https://spoud-training-kafka.s3.eu-central-1.amazonaws.com/CjXs20WW7/kafka-quiz/build/quiz.html
+http://spoud-training-kafka.s3-website.eu-central-1.amazonaws.com/GhPviso7T/kafka-quiz/build/quiz.html
 
 # Get your Kafka practice in hands-on exercises and demos
 
