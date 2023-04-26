@@ -2,11 +2,11 @@
 
 ## Slides
 
-http://spoud-training-kafka.s3-website.eu-central-1.amazonaws.com/erR8lTPJp/index.html
+http://spoud-training-kafka.s3-website.eu-central-1.amazonaws.com/FGY5Awz9H/index.html
 
 ## Kafka quiz
 
-http://spoud-training-kafka.s3-website.eu-central-1.amazonaws.com/erR8lTPJp/kafka-quiz/build/quiz.html
+http://spoud-training-kafka.s3-website.eu-central-1.amazonaws.com/FGY5Awz9H/kafka-quiz/build/quiz.html
 
 # Get your Kafka practice in hands-on exercises and demos
 
