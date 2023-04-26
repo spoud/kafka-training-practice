@@ -130,7 +130,7 @@ Here is a small script to produce some scoreboard messages
 
 ```bash
 declare -A s=([p1]=0 [p2]=0 [p3]=0 [p4]=0 [p5]=0 [p6]=0 [p7]=0 [p8]=0 [p9]=0);
-for i in {1..1000}; do id="p$(( ($i-1) % 9 + 1 ))"; inc=$((RANDOM%10+1)); s[$id]=$((s[$id]+inc)); echo -e "{\"player_id\":\"$id\",\"score\":${s[$id]}}"; done
+for i in {1..1000}; do id="p$(( ($i-1) % 9 + 1 ))"; inc=$((RANDOM%10+1)); s[$id]=$((s[$id]+inc)); echo -e "$id\t{\"player_id\":\"$id\",\"score\":${s[$id]}}"; done
 ```
 
 
