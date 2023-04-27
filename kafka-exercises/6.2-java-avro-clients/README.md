@@ -37,7 +37,7 @@ Make sure the kafka services are running with `docker-compose up -d`
 
 4. The generated AVRO classes should be in `target/generated-sources/avro`.
    Hint: You may need to mark this directory as `generated-sources-root` in your IDE to make sure it's in the projects classpath.
-5. Compare the `SCHEMA$` filed in the generated class and the original schemas
+5. Compare the `SCHEMA$` field in the generated class and the original schemas
 6. Proceed to implement the `//TODO` markers in [Producer.java](java-avro-producer/src/main/java/io/spoud/training/Producer.java)
 7. Run the main method and watch the console log to verify that messages can be serialized and sent to the topic.
 
