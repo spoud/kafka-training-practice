@@ -3,6 +3,8 @@ version: '2'
 services:
   akhq:
     image: tchiotludo/akhq
+    security_opt:
+      - seccomp:unconfined
     environment:
       AKHQ_CONFIGURATION: |
         akhq:
@@ -20,3 +22,7 @@ services:
     links:
       - broker
       - schema-registry
+
+
+    volumes:
+      - ./akhq-jvm.options:/app/jvm.options
