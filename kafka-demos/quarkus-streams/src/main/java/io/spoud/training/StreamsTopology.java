@@ -4,6 +4,7 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.GlobalKTable;
 import org.apache.kafka.streams.kstream.KStream;
+import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -14,6 +15,9 @@ public class StreamsTopology {
     static final String WEATHER_STATIONS_TOPIC = "weather-stations";
     static final String TEMPERATURE_VALUES_TOPIC = "temperature-values";
     static final String TEMPERATURES_AGGREGATED_TOPIC = "temperatures-aggregated";
+
+    private static final Logger LOG = Logger.getLogger(StreamsTopology.class);
+
 
     @Produces
     public Topology buildTopology() {
@@ -39,6 +43,7 @@ public class StreamsTopology {
                             return aggregation;
                         })
                 .toStream()
+                .peek((stationId, aggregation) -> LOG.infov("station: {0}, aggregation: {1}", stationId, aggregation))
                 .to(TEMPERATURES_AGGREGATED_TOPIC);
 
         return builder.build();

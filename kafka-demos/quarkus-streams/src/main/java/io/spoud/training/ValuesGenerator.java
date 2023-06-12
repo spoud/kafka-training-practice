@@ -46,7 +46,7 @@ public class ValuesGenerator {
                             .setScale(1, RoundingMode.HALF_UP)
                             .doubleValue();
 
-                    LOG.infov("station: {0}, temperature: {1}", station.getName(), temperature);
+                    LOG.debugv("station: {0}, temperature: {1}", station.getName(), temperature);
                     return Record.of(
                             station.getId(),
                             TemperatureReading.newBuilder().setStationId(station.getId()).setTemperature(temperature).build()
