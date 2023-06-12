@@ -8,8 +8,10 @@
 ## Preparation
 
 * Start the required docker compose services with `docker-compose up -d zookeeper broker schema-registry`
-* **Note**: If you don't have curl installed on your PC, then you can also execute these commands inside the schema-registry container, but you'll need to replace the bootstrap url with `broker:9092`:
+* **Note**: If you don't have curl installed on your PC, then you can also execute these commands inside the schema-registry container:
 `docker-compose exec schema-registry bash`
+* **Note**: The `kafka-avro-console-producer` and `kafka-avro-console-consumer` tools are installed in the `schema-registry` container.
+You can access it with `docker-compose exec schema-registry bash` and then execute the commands.
 
 
 
