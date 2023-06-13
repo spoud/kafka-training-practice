@@ -40,7 +40,7 @@
 
       curl localhost:8083/connectors/sink/status | jq
 
-* curl 'http://localhost:9200/es-sink/_search?pretty'
+* curl 'http://localhost:9200/purchases/_search?pretty'
 * http://localhost:5601/app/home#/
     
 
