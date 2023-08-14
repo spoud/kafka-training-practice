@@ -2,7 +2,7 @@
 
 ## Slides
 
-http://spoud-training-kafka.s3-website.eu-central-1.amazonaws.com/z44ywQOXb/index.html
+http://spoud-training-kafka.s3-website.eu-central-1.amazonaws.com/T-PrxA1m6/index.html
 
 ## Kafka quiz
 
