@@ -31,14 +31,13 @@ You find the following two services in this folder:
 * If your consumer gets stuck check the health endpoint... what is the problem?
 * Try out `@Retry`
 * Create tests which verifies the logic
-* Navigate to http://localhost:7983/q/metrics and check what metrics are available for kafka and especially for the poll loop
 
 
 ## Extra challenge 1
 
 * Remove the `@Retry` annotation
-* Experiment with `failuer-strategy` `fail` and `ignore`
-* Experiment with `failuer-strategy` dead-letter-topic
+* Experiment with `failure-strategy` `fail` and `ignore`
+* Experiment with `failure-strategy` dead-letter-queue
 
 ## Extra challenge 2
 
