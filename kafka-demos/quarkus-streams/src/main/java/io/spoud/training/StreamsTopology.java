@@ -4,7 +4,11 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.GlobalKTable;
 import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.TimeWindows;
+import org.apache.kafka.streams.kstream.Windows;
 import org.jboss.logging.Logger;
+
+import java.time.Duration;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -31,6 +35,7 @@ public class StreamsTopology {
                         // joiner
                         (temperatureReading, station) -> TemperatureReading.newBuilder(temperatureReading).setStationName(station.getName()).build())
                 .groupByKey()
+                .windowedBy(TimeWindows.of(Duration.ofSeconds(10))) // aggregate over a time window of 10 seconds
                 .aggregate(() -> AggregationResult.newBuilder().setStationId(-1).setStationName("").build(),
                         (stationId, value, aggregation) -> {
                             aggregation.setStationName(value.getStationName());
