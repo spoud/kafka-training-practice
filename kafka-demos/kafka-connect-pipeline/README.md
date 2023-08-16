@@ -2,16 +2,22 @@
 
 ## Prepare Environment
 
-1. start the connect-worker and its dependencies  
-   `docker-compose up -d zookeeper broker connect schema-registry`
-   `docker-compose -f docker-compose-elk.yml up -d`
+1. start the connect-worker and its dependencies
+
+```bash
+      docker-compose up -d zookeeper broker connect schema-registry
+      docker-compose -f docker-compose-elk.yml up -d
+```
+ 
 2. install the plugins we are going to use  
 
 ## Installing Connector Plugins
 
 * The Datagen Source Connector is already present in our connect-worker  
-  `curl localhost:8083/connector-plugins | jq`
-* we install the JDBC connector to create a JDBC sink
+      
+      curl localhost:8083/connector-plugins | jq
+
+* we install the Elasticsearch connector to create an Elasticsearch sink
   
       docker-compose exec connect bash
       confluent-hub install confluentinc/kafka-connect-elasticsearch:latest
