@@ -5,7 +5,7 @@
 1. start the connect-worker and its dependencies
 
 ```bash
-      docker-compose up -d zookeeper broker connect schema-registry
+      docker-compose up -d broker connect schema-registry
       docker-compose -f docker-compose-elk.yml up -d
 ```
  
