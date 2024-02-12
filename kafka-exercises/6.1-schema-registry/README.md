@@ -7,7 +7,7 @@
 
 ## Preparation
 
-* Start the required docker compose services with `docker-compose up -d zookeeper broker schema-registry`
+* Start the required docker compose services with `docker-compose up -d broker schema-registry`
 * **Note**: If you don't have curl installed on your PC, then you can also execute these commands inside the schema-registry container:
 `docker-compose exec schema-registry bash`
 * **Note**: The `kafka-avro-console-producer` and `kafka-avro-console-consumer` tools are installed in the `schema-registry` container.
@@ -72,3 +72,10 @@ You can access it with `docker-compose exec schema-registry bash` and then execu
         curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
         -d '{"schema": "{\"type\": \"record\", \"name\": \"Car\", \"namespace\": \"io.spoud.training\", \"fields\": [{\"name\": \"manufacturer\", \"type\": \"string\"}, {\"name\": \"name\", \"type\": \"string\"}]}", "metadata": {"properties": {"application.major.version": "3"}}}' \
         http://localhost:8081/subjects/cars-value/versions
+
+
+## Send a avsc file to the schema registry
+
+```bash
+jq '. | {schema: tojson}' cars-value-v1.avsc | curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" -d @- http://localhost:8081/subjects/cars-value/versions
+```
