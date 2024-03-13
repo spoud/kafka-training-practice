@@ -1,0 +1,79 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  - package-ecosystem: "maven"
+    directory: "kafka-demos/java-batching"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
+    directory: "kafka-demos/java-consumer-liveness"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
+    directory: "kafka-demos/java-default-partitioning"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
+    directory: "kafka-demos/quarkus-streams"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
+    directory: "TODO"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
+    directory: "kafka-exercises/3.1-java-client/java-consumer"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
+    directory: "kafka-exercises/3.1-java-client/java-producer"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
+    directory: "kafka-exercises/4.1-quarkus/quarkus-consume-call-rest"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
+    directory: "kafka-exercises/4.1-quarkus/quarkus-producer-from-rest"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
+    directory: "kafka-exercises/6.2-java-avro-clients/java-avro-producer"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
+    directory: "kafka-exercises/6.2-java-avro-clients/quarkus-avro-consumer"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
+    directory: "kafka-exercises-solutions/3.1-java-client/java-consumer"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
+    directory: "kafka-exercises-solutions/3.1-java-client/java-producer"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
+    directory: "kafka-exercises-solutions/4.1-quarkus/quarkus-consume-call-rest"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
+    directory: "kafka-exercises-solutions/4.1-quarkus/quarkus-producer-from-rest"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
+    directory: "kafka-exercises-solutions/6.2-java-avro-clients/java-avro-producer"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
+    directory: "kafka-exercises-solutions/6.2-java-avro-clients/quarkus-avro-consumer"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
+    directory: "/resources/services/crappy-echo-service"
+    schedule:
+      interval: "weekly"
