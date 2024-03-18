@@ -7,7 +7,7 @@
 
 ## Preparation
 
-* Start the required docker compose services with `docker-compose up -d zookeeper broker schema-registry`
+* Start the required docker compose services with `docker-compose up -d broker schema-registry`
 * **Note**: If you don't have curl installed on your PC, then you can also execute these commands inside the schema-registry container:
 `docker-compose exec schema-registry bash`
 * **Note**: The `kafka-avro-console-producer` and `kafka-avro-console-consumer` tools are installed in the `schema-registry` container.
@@ -24,7 +24,7 @@ You can access it with `docker-compose exec schema-registry bash` and then execu
 2. We want to register a new schema for record values in topic `cars`
 
        curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
-        -d '{"schema": "{\"type\": \"record\", \"name\": \"Car\", \"namespace\": \"io.spoud.training\", \"fields\": [{\"name\": \"make\", \"type\": \"string\"}, {\"name\": \"model\", \"type\": \"string\"}]}"}' \
+        -d '{"schema": "{\"type\": \"record\", \"name\": \"Car\", \"namespace\": \"io.spoud.training\", \"fields\": [{\"name\": \"make\", \"type\": \"string\"}, {\"name\": \"model\", \"type\": \"string\"}]}", "metadata": {"properties": {"application.major.version": "2"}}}' \
         http://localhost:8081/subjects/cars-value/versions
 
 3. Display the registered schema with `curl http://localhost:8081/subjects/cars-value/versions/1/schema`
@@ -48,7 +48,7 @@ You can access it with `docker-compose exec schema-registry bash` and then execu
        -d '{"schema": "{\"type\": \"record\", \"name\": \"Car\", \"namespace\": \"io.spoud.training\", \"fields\": [{\"name\": \"make\", \"type\": \"string\"}, {\"name\": \"model\", \"type\": \"string\"}, {\"name\": \"price\", \"type\": \"int\"}, {\"name\": \"color\", \"type\": \"string\"}]}"}' \
        http://localhost:8081/subjects/cars-value/versions
 
-7. Change the compatibility mode for the subject to FORWARD, then try registering the v3 schema again. 
+7. Change the compatibility mode for the subject to `FORWARD`, then try registering the v3 schema again (step 6).
 
        curl -X PUT -H "Content-Type: application/json" -d '{"compatibility": "FORWARD"}' \
        http://localhost:8081/config/cars-value
@@ -60,3 +60,55 @@ You can access it with `docker-compose exec schema-registry bash` and then execu
 9. Can you read the v2 message, even when v3 is the latest version?
 
        kafka-avro-console-consumer --bootstrap-server broker:29092 --from-beginning --topic cars --property schema.registry.url=http://localhost:8081
+
+
+## Bonus: Send an avsc file to the schema registry
+
+```bash
+jq '. | {schema: tojson}' cars-value-v1.avsc | curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" -d @- http://localhost:8081/subjects/cars-value/versions
+```
+
+## Bonus: schema compatibility groups
+
+Try out the new `compatibilityGroup` feature. 
+
+https://docs.confluent.io/platform/7.6/schema-registry/fundamentals/data-contracts.html#configuration-enhancements
+
+
+10. Delete subject permanently
+
+         curl -X DELETE http://localhost:8081/subjects/cars-value
+         curl -X DELETE http://localhost:8081/subjects/cars-value?permanent=true
+
+11. From the broker container delete topic `cars`:
+
+         docker-compose exec broker kafka-topics --bootstrap-server broker:29092 --delete --topic cars
+
+12. Follow these steps 1 - 6 from above. Then:
+
+13. Change the compatibility mode for the subject to FORWARD. We also set a `compatibilityGroup` so that compatibility is only checked for schemas that belong to the same major application version:
+
+        curl -X PUT -H "Content-Type: application/json" -d '{"compatibility": "FORWARD", "compatibilityGroup": "application.major.version"}' \
+        http://localhost:8081/config/cars-value
+
+
+14. then try registering the v3 schema again:
+
+        curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+        -d '{"schema": "{\"type\": \"record\", \"name\": \"Car\", \"namespace\": \"io.spoud.training\", \"fields\": [{\"name\": \"make\", \"type\": \"string\"}, {\"name\": \"model\", \"type\": \"string\"}, {\"name\": \"price\", \"type\": \"int\"}, {\"name\": \"color\", \"type\": \"string\"}]}"}' \
+        http://localhost:8081/subjects/cars-value/versions
+
+15. There should now be 3 versions available:
+
+        curl http://localhost:8081/subjects/cars-value/versions
+
+16. Can you read the v2 message, even when v3 is the latest version?
+
+        kafka-avro-console-consumer --bootstrap-server broker:29092 --from-beginning --topic cars --property schema.registry.url=http://localhost:8081
+
+17. You can register an incompatible schema if you change the major application version
+
+        curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+        -d '{"schema": "{\"type\": \"record\", \"name\": \"Car\", \"namespace\": \"io.spoud.training\", \"fields\": [{\"name\": \"manufacturer\", \"type\": \"string\"}, {\"name\": \"name\", \"type\": \"string\"}]}", "metadata": {"properties": {"application.major.version": "3"}}}' \
+        http://localhost:8081/subjects/cars-value/versions
+
