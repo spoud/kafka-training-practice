@@ -20,7 +20,7 @@ public class ProducerAppTest
     KafkaContainer kafka;
     @Before
     public void setUp() throws Exception {
-        kafka= new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.3.1"));
+        kafka= new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.6.0"));
         kafka.start();
     }
     @Test
