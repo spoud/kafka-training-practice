@@ -26,43 +26,42 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: root build with maven
-        working-directory: /
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         run: mvn -B clean verify
 
       - name: Build with maven java-consumer
-        working-directory: /kafka-exercises-solutions/3.1-java-client/java-consumer
+        working-directory: kafka-exercises-solutions/3.1-java-client/java-consumer
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         run: mvn -B clean verify
 
       - name: Build with maven java-producer
-        working-directory: /kafka-exercises-solutions/3.1-java-client/java-producer
+        working-directory: kafka-exercises-solutions/3.1-java-client/java-producer
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         run: mvn -B clean verify
 
       - name: Build with maven quarkus-consume-call-rest
-        working-directory: /kafka-exercises-solutions/4.1-quarkus/quarkus-consume-call-rest
+        working-directory: kafka-exercises-solutions/4.1-quarkus/quarkus-consume-call-rest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         run: mvn -B clean verify
 
       - name: Build with maven quarkus-producer-from-rest
-        working-directory: /kafka-exercises-solutions/4.1-quarkus/quarkus-producer-from-rest
+        working-directory: kafka-exercises-solutions/4.1-quarkus/quarkus-producer-from-rest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         run: mvn -B clean verify
 
       - name: Build with maven java-avro-producer
-        working-directory: /kafka-exercises-solutions/6.2-java-avro-clients/java-avro-producer
+        working-directory: kafka-exercises-solutions/6.2-java-avro-clients/java-avro-producer
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         run: mvn -B clean verify
 
       - name: Build with maven quarkus-avro-consumer
-        working-directory: /kafka-exercises-solutions/6.2-java-avro-clients/quarkus-avro-consumer
+        working-directory: kafka-exercises-solutions/6.2-java-avro-clients/quarkus-avro-consumer
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         run: mvn -B clean verify
