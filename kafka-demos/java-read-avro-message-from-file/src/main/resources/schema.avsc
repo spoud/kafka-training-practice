@@ -1,0 +1,25 @@
+{
+  "fields": [
+    {
+      "name": "contractId",
+      "type": "string"
+    },
+    {
+      "name": "premium",
+      "type": "long"
+    },
+    {
+      "default": null,
+      "name": "erstellungsdatum",
+      "type": [
+        "null",
+        {
+          "logicalType": "timestamp-millis",
+          "type": "long"
+        }
+      ]
+    }
+  ],
+  "name": "Premium",
+  "type": "record"
+}

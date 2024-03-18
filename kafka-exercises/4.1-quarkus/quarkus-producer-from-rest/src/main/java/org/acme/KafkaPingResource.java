@@ -1,15 +1,15 @@
 package org.acme;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import static io.smallrye.config.ConfigLogging.log;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import org.jboss.logging.Logger;
 
 @Path("/")
 public class KafkaPingResource {
+    private static final Logger LOG = Logger.getLogger(KafkaPingResource.class);
 
 
     // TODO emitter
@@ -18,7 +18,7 @@ public class KafkaPingResource {
     @Path("/ping-kafka-json")
     @Produces(MediaType.TEXT_PLAIN)
     public Response pingKafkaJson() {
-        log.info("ping kafka json");
+        LOG.info("ping kafka json");
 
         // TODO: send a message to kafka
         // TODO: return a response 200 "ok pong-kafka json"

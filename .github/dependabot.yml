@@ -74,6 +74,6 @@ updates:
     schedule:
       interval: "weekly"
   - package-ecosystem: "maven"
-    directory: "/resources/services/crappy-echo-service"
+    directory: "resources/services/crappy-echo-service"
     schedule:
       interval: "weekly"

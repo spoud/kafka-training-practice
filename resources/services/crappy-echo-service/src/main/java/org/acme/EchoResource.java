@@ -2,18 +2,18 @@ package org.acme;
 
 import org.jboss.logging.Logger;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.Random;
 
 
 @Path("/")
-public class EchoResoruce {
+public class EchoResource {
 
-    private static final Logger LOG = Logger.getLogger(EchoResoruce.class);
+    private static final Logger LOG = Logger.getLogger(EchoResource.class);
 
     Random random = new Random();
 

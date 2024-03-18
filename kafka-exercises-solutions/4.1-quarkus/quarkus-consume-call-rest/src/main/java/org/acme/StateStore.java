@@ -1,6 +1,6 @@
 package org.acme;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
