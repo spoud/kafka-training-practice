@@ -6,6 +6,10 @@
 version: 2
 updates:
   - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
     directory: "kafka-demos/java-batching"
     schedule:
       interval: "weekly"
