@@ -17,12 +17,15 @@ services:
               connect:
                 - name: "connect"
                   url: "http://connect:8083"
+      JAVA_OPTS: -XX:MaxRAM=250M
     ports:
       - 8089:8080
     links:
       - broker
       - schema-registry
 
-
-    volumes:
-      - ./akhq-jvm.options:/app/jvm.options
+# should you need more control over the JVM options, you can mount the config file
+# in case of errors with this file make sure it is not using Windows line endings
+# you can convert it with `dos2unix` and check with `file akhq-jvm.options` => this should return ASCII text and not ASCII text, with CRLF line terminators
+#    volumes:
+#      - ./akhq-jvm.options:/app/jvm.options
