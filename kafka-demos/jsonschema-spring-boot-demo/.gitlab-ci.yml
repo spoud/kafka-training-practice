@@ -1,0 +1,71 @@
+
+variables:
+  VAR_IMAGE: "$CI_REGISTRY/enterprise-kafka/jsonschema-demo/jsonschema-demo"
+  VAR_IMAGE_TAG: "$CI_PIPELINE_IID"
+
+build_jar:
+  stage: build
+  image: maven:3.9.6-eclipse-temurin-21
+  artifacts:
+    untracked: true
+    expire_in: 1 hour
+  script:
+    - mvn package
+  tags:
+    - gcp-ch-gke-cloud-integration
+    - cu-infrastructure
+
+register_image:
+  stage: register_image
+  dependencies:
+    - build_jar
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor
+      --context $CI_PROJECT_DIR
+      --dockerfile $CI_PROJECT_DIR/src/main/docker/Dockerfile
+      --destination "${VAR_IMAGE}:${VAR_IMAGE_TAG}"
+  tags:
+    - gcp-ch-gke-cloud-integration
+    - cu-infrastructure
+
+deploy:
+  dependencies:
+    - register_image
+  stage: deploy
+  when: manual
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
+  script:
+    - echo "$VAR_CA_CRT" > ca.crt
+    - sed -i "s|IMAGE_HERE|$VAR_IMAGE:$VAR_IMAGE_TAG|g" infrastructure/manifest.yaml
+    - kubectl --token=$VAR_K8S_TOKEN --server=$VAR_K8S_SERVER --certificate-authority=ca.crt apply -f infrastructure/manifest.yaml
+  tags:
+    - gcp-ch-gke-cloud-integration
+    - cu-infrastructure
+
+delete_k8s_resources:
+  dependencies:
+    - deploy
+  stage: delete_k8s_resources
+  when: manual
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
+  script:
+    - echo "$VAR_CA_CRT" > ca.crt
+    - kubectl --token=$VAR_K8S_TOKEN --server=$VAR_K8S_SERVER --certificate-authority=ca.crt delete -f infrastructure/manifest.yaml
+  tags:
+    - gcp-ch-gke-cloud-integration
+    - cu-infrastructure
+
+stages:
+  - build
+  - register_image
+  - deploy
+  - delete_k8s_resources
+
