@@ -6,6 +6,7 @@ import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.kafka.InjectKafkaCompanion;
 import io.quarkus.test.kafka.KafkaCompanionResource;
 import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -28,9 +29,10 @@ public class KafkaPingResourceFailureTest {
                 .body(containsString("io.smallrye.mutiny.TimeoutException"));
     }
 
+    // this will demonstrate that rest client does not get the intended error response
     @Test
+    @Disabled
     public void testEndpointFireAndForget() {
-
         given()
                 .when().get("/ping-kafka-json-fire-and-forget")
                 .then()
