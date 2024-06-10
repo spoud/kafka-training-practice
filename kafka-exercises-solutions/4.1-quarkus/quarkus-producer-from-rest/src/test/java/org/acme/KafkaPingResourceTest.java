@@ -36,4 +36,22 @@ public class KafkaPingResourceTest {
 
         // with pingMessages.stream().iterator().next() you can get the message
     }
+
+
+
+    @Test
+    public void testEndpointFireAndForget() {
+
+        given()
+                .when().get("/ping-kafka-json-fire-and-forget")
+                .then()
+                .statusCode(200);
+
+        // verify the message was sent to kafka
+        ConsumerTask<String, String> pingMessages = companion.consumeStrings().fromTopics("kaf-demo-ping-json-3", 1, Duration.ofSeconds(10));
+        pingMessages.awaitCompletion();
+        assertEquals(1, pingMessages.count());
+
+        // with pingMessages.stream().iterator().next() you can get the message
+    }
 }

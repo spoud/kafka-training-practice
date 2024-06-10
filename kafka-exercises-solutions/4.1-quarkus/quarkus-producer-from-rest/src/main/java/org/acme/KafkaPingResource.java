@@ -43,4 +43,22 @@ public class KafkaPingResource {
                 .recoverWithItem(t -> Response.status(Response.Status.BAD_REQUEST).entity(t.getMessage()).build())
                 .await().atMost(Duration.ofSeconds(20));
     }
+
+
+
+
+
+    @GET
+    @Path("/ping-kafka-json-fire-and-forget")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response pingKafkaJsonFF(@QueryParam("number") int number) {
+
+        LOG.info("ping kafka json fire and forget number: " + number);
+
+        PingMessage pingMessage = new PingMessage();
+        pingMessage.setNumber(number);
+        Record<String, PingMessage> msg = Record.of("ping-key-" + number, pingMessage);
+        pingMessageEmitter.send(msg);
+        return Response.ok().build();
+    }
 }
