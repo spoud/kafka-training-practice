@@ -9,7 +9,7 @@ git switch updates
 
 # merge all dependabot branches into updates branch
 
-for branch in  $(gitbranch -a --sort=-committerdate | grep dependa); do echo "merging ${branch}" &&  git merge --no-edit $branch updates ; done
+for branch in  $(git branch -a --sort=-committerdate | grep dependa); do echo "merging ${branch}" &&  git merge --no-edit $branch updates ; done
 
 # in case of a conflict resolve it and continue with the merge
 git merge --continue

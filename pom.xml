@@ -22,7 +22,7 @@
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.2.5</surefire-plugin.version>
         <confluent.version>7.6.1</confluent.version>
-        <kafka.version>7.6.0-ce</kafka.version>
+        <kafka.version>7.6.1-ce</kafka.version>
     </properties>
     <modules>
         <!-- demos -->
@@ -74,7 +74,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>kafka</artifactId>
-            <version>1.19.7</version>
+            <version>1.19.8</version>
             <scope>test</scope>
         </dependency>
 
@@ -129,11 +129,11 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>3.1.1</version>
+                    <version>3.1.2</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>3.1.1</version>
+                    <version>3.1.2</version>
                 </plugin>
             </plugins>
         </pluginManagement>
