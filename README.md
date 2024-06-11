@@ -2,11 +2,9 @@
 
 ## Slides
 
-http://spoud-training-kafka.s3-website.eu-central-1.amazonaws.com/VbHi2dxrL/index.html
+http://spoud-training-kafka.s3-website.eu-central-1.amazonaws.com/yfNjqQhjC/index.html
 
-## Kafka quiz
-
-http://spoud-training-kafka.s3-website.eu-central-1.amazonaws.com/VbHi2dxrL/kafka-quiz/build/quiz.html
+There you will also find the quizzes to test your knowledge.
 
 # Get your Kafka practice in hands-on exercises and demos
 
@@ -45,9 +43,9 @@ docker-compose up -d
 | KsqlDB Server            | [8088](http://localhost:8088) |
 | AKHQ                     | [8089](http://localhost:8089) |
 | Crappy echo service      | [7980](http://localhost:7980) |
-| Quarkush http server     | [7981](http://localhost:7981) |
+| Quarkus http server      | [7981](http://localhost:7981) |
 | Quarkus test server      | [7982](http://localhost:7982) |
-| Quarkush http server 2   | [7983](http://localhost:7983) |
+| Quarkus http server 2    | [7983](http://localhost:7983) |
 | Quarkus test server 2    | [7984](http://localhost:7984) |
 | Kibana                   | [5601](http://localhost:5601) |
 | Elasticsearch            | [9200](http://localhost:9200) |
