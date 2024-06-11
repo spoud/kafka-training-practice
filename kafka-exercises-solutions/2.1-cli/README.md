@@ -69,9 +69,9 @@ Solution:
 
 Solution with kafka-command-line-client:
 
-    kafka-console-producer --broker-list localhost:9092 --topic topic-3p <<< '{"name": "foo", "value": 0}'
-    kafka-console-producer --broker-list localhost:9092 --topic topic-3p <<< '{"name": "bar", "value": 1}'
-    kafka-console-producer --broker-list localhost:9092 --topic topic-3p <<< '{"name": "baz", "value": 2}'
+    kafka-console-producer --bootstrap-server localhost:9092 --topic topic-3p <<< '{"name": "foo", "value": 0}'
+    kafka-console-producer --bootstrap-server localhost:9092 --topic topic-3p <<< '{"name": "bar", "value": 1}'
+    kafka-console-producer --bootstrap-server localhost:9092 --topic topic-3p <<< '{"name": "baz", "value": 2}'
 
 ## Exercise 3 - Consume messages from this topic
 
@@ -138,7 +138,7 @@ Solution:
 
 ```bash
 declare -A s=([p1]=0 [p2]=0 [p3]=0 [p4]=0 [p5]=0 [p6]=0 [p7]=0 [p8]=0 [p9]=0);
-for i in {1..1000}; do id="p$(( ($i-1) % 9 + 1 ))"; inc=$((RANDOM%10+1)); s[$id]=$((s[$id]+inc)); echo -e "$id\t{\"player_id\":\"$id\",\"score\":${s[$id]}}"; done | kafka-console-producer --broker-list localhost:9092 --topic scoreboard  --property parse.key=true
+for i in {1..1000}; do id="p$(( ($i-1) % 9 + 1 ))"; inc=$((RANDOM%10+1)); s[$id]=$((s[$id]+inc)); echo -e "$id\t{\"player_id\":\"$id\",\"score\":${s[$id]}}"; done | kafka-console-producer --bootstrap-server localhost:9092 --topic scoreboard  --property parse.key=true
 ```
 
 ## Read all data from the scoreboard topic
