@@ -8,21 +8,21 @@
       docker-compose up -d broker connect schema-registry
       docker-compose -f docker-compose-elk.yml up -d
 ```
- 
-2. install the plugins we are going to use  
+
+2. install the plugins we are going to use
 
 ## Installing Connector Plugins
 
-* The Datagen Source Connector is already present in our connect-worker  
-      
+* The Datagen Source Connector is already present in our connect-worker
+
       curl localhost:8083/connector-plugins | jq
 
 * we install the Elasticsearch connector to create an Elasticsearch sink
-  
+
       docker-compose exec connect bash
       confluent-hub install confluentinc/kafka-connect-elasticsearch:latest
- 
-* plugin is loaded after when the connect worker restarts 
+
+* plugin is loaded after when the connect worker restarts
 
       curl localhost:8083/connector-plugins | jq
       docker-compose restart connect
@@ -38,7 +38,8 @@
 
 * Check topic contents
 
-      kafka-avro-console-consumer --bootstrap-server localhost:9092 --topic purchases --from-beginning --property print.key=false
+      docker-compose exec connect bash
+      kafka-avro-console-consumer --bootstrap-server broker:29092 --topic purchases --from-beginning --property print.key=false --property schema.registry.url=http://schema-registry:8081
 
 * Sink connector
 
@@ -48,7 +49,7 @@
 
 * curl 'http://localhost:9200/purchases/_search?pretty'
 * http://localhost:5601/app/home#/
-    
+
 
 ## Delete a connector
 
