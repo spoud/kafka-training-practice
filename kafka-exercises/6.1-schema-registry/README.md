@@ -99,13 +99,12 @@ Try out the new `compatibilityGroup` feature.
   docker-compose exec broker kafka-topics --bootstrap-server broker:29092 --delete --topic cars
   ```
 
-12. Follow these steps 1 - 6 from above. Then:
+12. Follow steps 1 - 6 from above. Then:
 
 13. Change the compatibility mode for the subject to FORWARD. We also set a `compatibilityGroup` so that compatibility is only checked for schemas that belong to the same major application version:
 
   ```bash
-  curl -w "\n" -X PUT -H "Content-Type: application/json" -d '{"compatibility": "FORWARD", "compatibilityGroup": "application.major.version"}' \
-  <http://localhost:8081/config/cars-value>
+  curl -w "\n" -X PUT -H "Content-Type: application/json" -d '{"compatibility": "FORWARD", "compatibilityGroup": "application.major.version"}' http://localhost:8081/config/cars-value
   ```
 
 14. then try registering the v3 schema again:
@@ -113,7 +112,7 @@ Try out the new `compatibilityGroup` feature.
   ```bash
   curl -w "\n" -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
   -d '{"schema": "{\"type\": \"record\", \"name\": \"Car\", \"namespace\": \"io.spoud.training\", \"fields\": [{\"name\": \"make\", \"type\": \"string\"}, {\"name\": \"model\", \"type\": \"string\"}, {\"name\": \"price\", \"type\": \"int\"}, {\"name\": \"color\", \"type\": \"string\"}]}"}' \
-  <http://localhost:8081/subjects/cars-value/versions>
+  http://localhost:8081/subjects/cars-value/versions
   ```
 
 15. There should now be 3 versions available:
