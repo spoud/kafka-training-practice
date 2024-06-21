@@ -7,7 +7,7 @@
 ## Preparation
 
 * Start the required docker compose services with `docker-compose up -d broker schema-registry`
-* **Note**: If you don't have curl installed on your PC, then you can also execute these commands inside the schema-registry container:
+* **Note**: If you don't have `curl` installed on your PC, then you can also execute these commands inside the schema-registry container:
 `docker-compose exec schema-registry bash`
 * **Note**: The `kafka-avro-console-producer` and `kafka-avro-console-consumer` tools are installed in the `schema-registry` container.
 You can access it with `docker-compose exec schema-registry bash` and then execute the commands.
@@ -17,23 +17,23 @@ You can access it with `docker-compose exec schema-registry bash` and then execu
 1. Display all currently available subjects in the Schema Registry  
 
   ```bash
-  curl http://localhost:8081/subjects
+  curl -w "\n" http://localhost:8081/subjects
   ```
 
 2. We want to register a new schema for record values in topic `cars`
 
   ```bash
-  curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+  curl -w "\n" -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
   -d '{"schema": "{\"type\": \"record\", \"name\": \"Car\", \"namespace\": \"io.spoud.training\", \"fields\": [{\"name\": \"make\", \"type\": \"string\"}, {\"name\": \"model\", \"type\": \"string\"}]}", "metadata": {"properties": {"application.major.version": "2"}}}' \
   http://localhost:8081/subjects/cars-value/versions
   ```
 
-3. Display the registered schema with `curl http://localhost:8081/subjects/cars-value/versions/1/schema`
+3. Display the registered schema with `curl -w "\n" http://localhost:8081/subjects/cars-value/versions/1/schema`
 
 4. Version 2 of our schema contains a new field "price". Register this new version.
 
   ```bash
-  curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+  curl -w "\n" -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
   -d '{"schema": "{\"type\": \"record\", \"name\": \"Car\", \"namespace\": \"io.spoud.training\", \"fields\": [{\"name\": \"make\", \"type\": \"string\"}, {\"name\": \"model\", \"type\": \"string\"}, {\"name\": \"price\", \"type\": \"int\", \"default\": 0}]}"}' \
   http://localhost:8081/subjects/cars-value/versions
   ```
@@ -50,7 +50,7 @@ You can access it with `docker-compose exec schema-registry bash` and then execu
 6. What happens when you try to register schema version 3, which adds a new field "color"? Why could this version be incompatible?
 
   ```bash
-  curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+  curl -w "\n" -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
   -d '{"schema": "{\"type\": \"record\", \"name\": \"Car\", \"namespace\": \"io.spoud.training\", \"fields\": [{\"name\": \"make\", \"type\": \"string\"}, {\"name\": \"model\", \"type\": \"string\"}, {\"name\": \"price\", \"type\": \"int\"}, {\"name\": \"color\", \"type\": \"string\"}]}"}' \
   http://localhost:8081/subjects/cars-value/versions
   ```
@@ -58,14 +58,14 @@ You can access it with `docker-compose exec schema-registry bash` and then execu
 7. Change the compatibility mode for the subject to `FORWARD`, then try registering the v3 schema again (step 6).
 
   ```bash
-  curl -X PUT -H "Content-Type: application/json" -d '{"compatibility": "FORWARD"}' \
+  curl -w "\n" -X PUT -H "Content-Type: application/json" -d '{"compatibility": "FORWARD"}' \
   http://localhost:8081/config/cars-value
   ```
 
 8. There should now be 3 versions available:
 
   ```bash
-  curl http://localhost:8081/subjects/cars-value/versions
+  curl -w "\n" http://localhost:8081/subjects/cars-value/versions
   ```
 
 9. Can you read the v2 message, even when v3 is the latest version?
@@ -77,7 +77,7 @@ You can access it with `docker-compose exec schema-registry bash` and then execu
 ## Bonus: Send an avsc file to the schema registry
 
 ```bash
-jq '. | {schema: tojson}' cars-value-v1.avsc | curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" -d @- http://localhost:8081/subjects/cars-value/versions
+jq '. | {schema: tojson}' cars-value-v1.avsc | curl -w "\n" -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" -d @- http://localhost:8081/subjects/cars-value/versions
 ```
 
 ## Bonus: schema compatibility groups
@@ -89,8 +89,8 @@ Try out the new `compatibilityGroup` feature.
 10. Delete subject permanently
 
   ```bash
-  curl -X DELETE http://localhost:8081/subjects/cars-value
-  curl -X DELETE http://localhost:8081/subjects/cars-value?permanent=true
+  curl -w "\n" -X DELETE http://localhost:8081/subjects/cars-value
+  curl -w "\n" -X DELETE http://localhost:8081/subjects/cars-value?permanent=true
   ```
 
 11. From the broker container delete topic `cars`:
@@ -104,14 +104,14 @@ Try out the new `compatibilityGroup` feature.
 13. Change the compatibility mode for the subject to FORWARD. We also set a `compatibilityGroup` so that compatibility is only checked for schemas that belong to the same major application version:
 
   ```bash
-  curl -X PUT -H "Content-Type: application/json" -d '{"compatibility": "FORWARD", "compatibilityGroup": "application.major.version"}' \
+  curl -w "\n" -X PUT -H "Content-Type: application/json" -d '{"compatibility": "FORWARD", "compatibilityGroup": "application.major.version"}' \
   <http://localhost:8081/config/cars-value>
   ```
 
 14. then try registering the v3 schema again:
 
   ```bash
-  curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+  curl -w "\n" -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
   -d '{"schema": "{\"type\": \"record\", \"name\": \"Car\", \"namespace\": \"io.spoud.training\", \"fields\": [{\"name\": \"make\", \"type\": \"string\"}, {\"name\": \"model\", \"type\": \"string\"}, {\"name\": \"price\", \"type\": \"int\"}, {\"name\": \"color\", \"type\": \"string\"}]}"}' \
   <http://localhost:8081/subjects/cars-value/versions>
   ```
@@ -119,7 +119,7 @@ Try out the new `compatibilityGroup` feature.
 15. There should now be 3 versions available:
 
   ```bash
-  curl http://localhost:8081/subjects/cars-value/versions
+  curl -w "\n" http://localhost:8081/subjects/cars-value/versions
   ```
 
 16. Can you read the v2 message, even when v3 is the latest version?
@@ -131,7 +131,7 @@ Try out the new `compatibilityGroup` feature.
 17. You can register an incompatible schema if you change the major application version
 
   ```bash
-  curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+  curl -w "\n" -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
   -d '{"schema": "{\"type\": \"record\", \"name\": \"Car\", \"namespace\": \"io.spoud.training\", \"fields\": [{\"name\": \"manufacturer\", \"type\": \"string\"}, {\"name\": \"name\", \"type\": \"string\"}]}", "metadata": {"properties": {"application.major.version": "3"}}}' \
   http://localhost:8081/subjects/cars-value/versions
   ```
