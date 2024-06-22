@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "Car",
+  "namespace": "io.spoud.training",
+  "fields": [
+    { "name": "make", "type": "string" },
+    { "name": "model", "type": "string" },
+    { "name": "price", "type": "int" },
+    { "name": "color", "type": "string" }
+  ]
+}
