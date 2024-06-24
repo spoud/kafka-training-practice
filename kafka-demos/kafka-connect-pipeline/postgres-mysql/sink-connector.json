@@ -1,0 +1,18 @@
+{
+  "connector.class": "io.debezium.connector.jdbc.JdbcSinkConnector",
+  "tasks.max": "1",
+  "connection.url": "jdbc:mysql://mysql:3306/copy",
+  "connection.username": "mysqluser",
+  "connection.password": "mysqlpw",
+
+  "transforms": "unwrap",
+  "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+  "transforms.unwrap.drop.tombstones": "false",
+
+  "insert.mode": "upsert",
+  "delete.enabled": "true",
+  "primary.key.mode": "record_key",
+  "schema.evolution": "basic",
+  "database.time_zone": "UTC",
+  "topics": "inventory-source.inventory.customers"
+}

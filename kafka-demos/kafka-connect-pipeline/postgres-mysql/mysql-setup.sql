@@ -1,0 +1,5 @@
+CREATE DATABASE copy CHARACTER SET utf8 COLLATE utf8_general_ci;
+GRANT ALL PRIVILEGES
+  ON copy.*
+  TO 'mysqluser'@'%'
+  WITH GRANT OPTION;
