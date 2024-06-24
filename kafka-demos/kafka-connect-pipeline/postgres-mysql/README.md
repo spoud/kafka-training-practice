@@ -61,6 +61,20 @@ Inspect changes in the target database
 docker compose exec mysql mysql --user root --password=debezium -e 'SELECT * FROM `inventory-source_inventory_customers`;' copy
 ```
 
+## Inspect offsets
+
+```bash
+curl localhost:8083/connectors/postgres-source/offsets | jq
+```
+
+The offsets of a source connector return data specific for the source system. In this case, the log sequence number (LSN) denotes the last position that the connector commited within Postgres.
+
+```bash
+curl localhost:8083/connectors/mysql-sink/offsets | jq
+```
+
+The offsets of a target connector are regular Kafka offsets.
+
 ## Clean up
 
 Delete a connector
