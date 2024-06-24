@@ -1,7 +1,7 @@
 # JsonSchema Demo with Kafka and Spring Boot (multiple event types per topic)
 
 This repository contains a minimal Spring Boot project that demonstrates how to use Kafka with JsonSchema.
-We demonstrate using multiple event types per topic.
+We also demonstrate the usage of multiple event types per topic.
 The scenario is quite simple: we provide a REST API that allows users to create, query and update movies and books.
 Each movie is represented by a simple JSON object:
 
