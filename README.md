@@ -38,8 +38,8 @@ docker-compose up -d
 | Confluent Control Center | [9021](http://localhost:9021) |
 | Kafka                    | 9092                          |
 | Schema Registry          | [8081](http://localhost:8081) |
-| Kafka Connect            | [8083](http://localhost:8083) |
 | Kafka REST Proxy         | [8082](http://localhost:8082) |
+| Kafka Connect            | [8083](http://localhost:8083) |
 | KsqlDB Server            | [8088](http://localhost:8088) |
 | AKHQ                     | [8089](http://localhost:8089) |
 | Crappy echo service      | [7980](http://localhost:7980) |
@@ -49,4 +49,4 @@ docker-compose up -d
 | Quarkus test server 2    | [7984](http://localhost:7984) |
 | Kibana                   | [5601](http://localhost:5601) |
 | Elasticsearch            | [9200](http://localhost:9200) |
-
+| Flink Dashboard          | [8090](http://localhost:8090) |

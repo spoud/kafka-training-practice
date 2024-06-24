@@ -1,0 +1,35 @@
+services:
+  jobmanager:
+    build: resources/docker/flink/
+    ports:
+      - "8090:8081"
+    command: jobmanager
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+        jobmanager.memory.process.size: 1024m
+
+  taskmanager:
+    build: resources/docker/flink/
+    depends_on:
+      - jobmanager
+    command: taskmanager
+    scale: 1
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+        taskmanager.numberOfTaskSlots: 2
+        taskmanager.memory.process.size: 1024m
+  sql-client:
+    build: resources/docker/flink/
+    command: bash -c "tail -f /dev/null"
+    stop_grace_period: 0s
+    depends_on:
+      - jobmanager
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+        rest.address: jobmanager

@@ -130,6 +130,7 @@ services:
       - broker
       - schema-registry
       - connect
+    stop_grace_period: 0s
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
                        cub kafka-ready -b broker:29092 1 40 && \
                        echo Waiting for Confluent Schema Registry to be ready... && \
