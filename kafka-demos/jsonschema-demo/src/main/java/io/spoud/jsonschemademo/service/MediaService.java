@@ -56,6 +56,14 @@ public class MediaService {
             books.put(key, model);
         }
     }
+    
+    @KafkaHandler
+    void onTombstone(@Payload(required = false) KafkaNull model,
+                 @Header(KafkaHeaders.RECEIVED_KEY) String key) {
+        log.info("Received tombstone for message with key {}", key);
+        books.remove(key);
+        movies.remove(key);
+    }
 
     @KafkaHandler(isDefault = true)
     void onOther(@Payload(required = false) Object model,
