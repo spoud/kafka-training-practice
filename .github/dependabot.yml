@@ -30,6 +30,10 @@ updates:
     schedule:
       interval: "weekly"
   - package-ecosystem: "maven"
+    directory: "kafka-demos/flink/datastream"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
     directory: "kafka-exercises/3.1-java-client/java-consumer"
     schedule:
       interval: "weekly"

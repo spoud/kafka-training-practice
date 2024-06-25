@@ -1,0 +1,33 @@
+{
+  "namespace":"io.spoud.training.flink",
+  "name": "Inventory",
+  "type": "record",
+  "fields": [
+    {"name": "id", "type": {
+      "type": "long",
+      "arg.properties": {
+        "iteration": {
+          "start": 0
+        }
+      }
+    }},
+    {"name": "stockAddQuantity", "type": {
+      "type": "long",
+      "arg.properties":{
+        "range":{
+          "min":10,
+          "max":1000
+        }
+      }
+    }},
+    {"name": "productid", "type": {
+      "type": "long",
+      "arg.properties":{
+        "range":{
+          "min":100,
+          "max":999
+        }
+      }
+    }}
+  ]
+}

@@ -105,3 +105,47 @@ INSERT INTO pageviews_per_region
     GROUP BY users.regionid, TUMBLE(pageviews.viewtime_ts, INTERVAL '1' MINUTE);
 
 ```
+
+
+## Datastream API
+
+
+export SCHEMA=$(cat kafka-demos/flink/datastream/src/main/avro/inventory.avsc | jq -c @json)
+cat kafka-demos/flink/datastream/src/main/resources/datagen-connector.inventory.config | envsubst |
+curl -X POST -H "Content-Type: application/json" --data-binary @- http://localhost:8083/connectors
+
+
+export SCHEMA=$(cat kafka-demos/flink/datastream/src/main/avro/orders.avsc | jq -c @json)
+cat kafka-demos/flink/datastream/src/main/resources/datagen-connector.orders.config | envsubst |
+curl -X POST -H "Content-Type: application/json" --data-binary @- http://localhost:8083/connectors
+
+## Check status
+
+```bash
+      curl http://localhost:8083/connectors/datagen-inventory/status
+      curl http://localhost:8083/connectors/datagen-orders/status
+```
+
+## Run the Flink Job
+
+In intellij run the DataStreamDemo class. Make sure you have "Add dependencies with 'provided' scope" enabled in the maven settings / run configuration.
+
+
+Observe the output in the console.
+
+## Cleanup
+
+```bash
+      curl -X DELETE http://localhost:8083/connectors/datagen-inventory
+      curl -X DELETE http://localhost:8083/connectors/datagen-orders
+      # delete schemas
+      
+      curl -X DELETE http://localhost:8081/subjects/inventory-value
+      curl -X DELETE http://localhost:8081/subjects/inventory-value?permanent=true
+      
+      curl -X DELETE http://localhost:8081/subjects/orders-value
+      curl -X DELETE http://localhost:8081/subjects/orders-value?permanent=true
+
+      docker-compose down -v
+      
+```
