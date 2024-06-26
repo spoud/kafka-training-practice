@@ -5,8 +5,7 @@
 1. start the connect-worker and its dependencies
 
 ```bash
-      docker-compose up -d broker connect schema-registry
-      docker-compose -f docker-compose-elk.yml up -d
+      docker compose -f docker-compose-elk.yml -f docker-compose.yml up -d broker connect schema-registry elasticsearch kibana
 ```
 
 2. install the plugins we are going to use

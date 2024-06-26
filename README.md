@@ -2,7 +2,7 @@
 
 ## Slides
 
-http://spoud-training-kafka.s3-website.eu-central-1.amazonaws.com/vQwVwX5vb/index.html
+http://spoud-training-kafka.s3-website.eu-central-1.amazonaws.com/JqSAU_Ay7/index.html
 
 There you will also find the quizzes to test your knowledge.
 
