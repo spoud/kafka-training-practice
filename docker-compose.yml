@@ -1,9 +1,11 @@
 ---
+version: '2'
 services:
 
   broker:
-    image: confluentinc/cp-kafka:7.6.1
+    image: confluentinc/cp-kafka:7.6.2
     hostname: broker
+    container_name: broker
     ports:
       - "9092:9092"
       - "9101:9101"
@@ -23,13 +25,14 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
       KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
-      # Replace CLUSTER_ID with a unique base64 UUID using "bin/kafka-storage.sh random-uuid"
+      # Replace CLUSTER_ID with a unique base64 UUID using "bin/kafka-storage.sh random-uuid" 
       # See https://docs.confluent.io/kafka/operations-tools/kafka-tools.html#kafka-storage-sh
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:7.6.1
+    image: confluentinc/cp-schema-registry:7.6.2
     hostname: schema-registry
+    container_name: schema-registry
     depends_on:
       - broker
     ports:
@@ -42,6 +45,7 @@ services:
   connect:
     image: cnfldemos/cp-server-connect-datagen:0.6.4-7.6.0
     hostname: connect
+    container_name: connect
     depends_on:
       - broker
       - schema-registry
@@ -62,15 +66,16 @@ services:
       CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       # CLASSPATH required due to CC-2422
-      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-7.6.1.jar
+      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-7.6.2.jar
       CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
       CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
       CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=ERROR,org.I0Itec.zkclient=ERROR,org.reflections=ERROR
 
   control-center:
-    image: confluentinc/cp-enterprise-control-center:7.6.1
+    image: confluentinc/cp-enterprise-control-center:7.6.2
     hostname: control-center
+    container_name: control-center
     depends_on:
       - broker
       - schema-registry
@@ -92,8 +97,9 @@ services:
       PORT: 9021
 
   ksqldb-server:
-    image: confluentinc/cp-ksqldb-server:7.6.1
+    image: confluentinc/cp-ksqldb-server:7.6.2
     hostname: ksqldb-server
+    container_name: ksqldb-server
     depends_on:
       - broker
       - connect
@@ -114,7 +120,8 @@ services:
       KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: 'true'
 
   ksqldb-cli:
-    image: confluentinc/cp-ksqldb-cli:7.6.1
+    image: confluentinc/cp-ksqldb-cli:7.6.2
+    container_name: ksqldb-cli
     depends_on:
       - broker
       - connect
@@ -123,14 +130,14 @@ services:
     tty: true
 
   ksql-datagen:
-    image: confluentinc/ksqldb-examples:7.6.1
+    image: confluentinc/ksqldb-examples:7.6.2
     hostname: ksql-datagen
+    container_name: ksql-datagen
     depends_on:
       - ksqldb-server
       - broker
       - schema-registry
       - connect
-    stop_grace_period: 0s
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
                        cub kafka-ready -b broker:29092 1 40 && \
                        echo Waiting for Confluent Schema Registry to be ready... && \
@@ -138,7 +145,6 @@ services:
                        echo Waiting a few seconds for topic creation to finish... && \
                        sleep 11 && \
                        tail -f /dev/null'"
-    # example command: ksql-datagen quickstart=users format=json topic=users maxInterval=1000 msgRate=4 iterations=1000000 bootstrap-server=broker:29092
     environment:
       KSQL_CONFIG_DIR: "/etc/ksql"
       STREAMS_BOOTSTRAP_SERVERS: broker:29092
@@ -146,13 +152,14 @@ services:
       STREAMS_SCHEMA_REGISTRY_PORT: 8081
 
   rest-proxy:
-    image: confluentinc/cp-kafka-rest:7.6.1
+    image: confluentinc/cp-kafka-rest:7.6.2
     depends_on:
       - broker
       - schema-registry
     ports:
       - 8082:8082
     hostname: rest-proxy
+    container_name: rest-proxy
     environment:
       KAFKA_REST_HOST_NAME: rest-proxy
       KAFKA_REST_BOOTSTRAP_SERVERS: 'broker:29092'
