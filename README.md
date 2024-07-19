@@ -37,7 +37,7 @@ docker-compose up -d
 | Service                  | Port                          |
 |--------------------------|-------------------------------|
 | Confluent Control Center | [9021](http://localhost:9021) |
-| Kafka                    | 9092                          |
+| Kafka                    | [9092](http://localhost:9092) |
 | Schema Registry          | [8081](http://localhost:8081) |
 | Kafka REST Proxy         | [8082](http://localhost:8082) |
 | Kafka Connect            | [8083](http://localhost:8083) |
