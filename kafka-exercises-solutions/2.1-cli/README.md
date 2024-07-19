@@ -125,7 +125,7 @@ Try again to consume from the topic and note the error message.
 ### Solution
 
 ```log
-Error while fetching metadata with correlation id 2 : {topic-3p=LEADER_NOT_AVAILABLE} (org.apache.kafka.clients.NetworkClient)
+Error while fetching metadata with correlation id 2 : {topic-3p=UNKNOWN_TOPIC_OR_PARTITION} (org.apache.kafka.clients.NetworkClient)
 ```
 
 ## Exercise 5 - Create a compacted topic `scoreboard` with 3 partitions and the following settings
