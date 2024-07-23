@@ -1,12 +1,16 @@
-# clear all events from a topic
+# Clear all events from a topic
 
 If we want to clear all the events from a topic we can set the retention time (`retention.ms`) to 0ms. This will delete all the events from the topic.
 
-`kafka-configs --bootstrap-server localhost:9092 --entity-type topics --entity-name <topic> --alter --add-config retention.ms=0`
+```bash
+kafka-configs --bootstrap-server localhost:9092 --entity-type topics --entity-name <topic> --alter --add-config retention.ms=0
+```
 
 Try to consume from the topic.
 
-`kafka-console-consumer --bootstrap-server localhost:9092 --topic <topic> --from-beginning`
+```bash
+kafka-console-consumer --bootstrap-server localhost:9092 --topic <topic> --from-beginning
+```
 
 You will see the following log messages:
 
@@ -25,4 +29,7 @@ kafka-training-practice-broker-1  | [2023-04-26 08:41:28,004] INFO Deleted time 
 Because the newest message of the active segment is already older than the `retention.ms` the segment is rolled anyway.
 
 Restore the retention.ms property to the default value
-`kafka-configs --bootstrap-server localhost:9092 --entity-type topics --entity-name <topic> --alter --add-config retention.ms=604800000`
+
+```bash
+kafka-configs --bootstrap-server localhost:9092 --entity-type topics --entity-name <topic> --alter --add-config retention.ms=604800000
+```
