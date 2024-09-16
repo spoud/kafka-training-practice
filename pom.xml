@@ -22,7 +22,7 @@
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.4.0</surefire-plugin.version>
         <confluent.version>7.6.1</confluent.version>
-        <kafka.version>7.6.1-ce</kafka.version>
+        <kafka.version>7.7.1-ce</kafka.version>
     </properties>
     <modules>
         <!-- demos -->
