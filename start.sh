@@ -25,7 +25,7 @@ fi
 
 # Download docker-compose.yml if it does not exist
 if [ ! -f "docker-compose.yml" ]; then
-  wget https://raw.githubusercontent.com/confluentinc/cp-all-in-one/7.6.2-post/cp-all-in-one-kraft/docker-compose.yml
+  wget https://raw.githubusercontent.com/confluentinc/cp-all-in-one/7.7.0-post/cp-all-in-one-kraft/docker-compose.yml
 fi
 
 # Run Docker Compose

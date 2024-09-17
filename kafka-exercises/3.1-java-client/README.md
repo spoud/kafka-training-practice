@@ -15,8 +15,8 @@
 
 **Producer:**
 
-* Create a producer that sends 100 messages one every 10ms to a topic on your local kafka instance
-* Verify that the messages are in the topic with the command line tools and control center
+* Create a producer that sends 100 messages (one every 10ms) to a topic on your local kafka instance
+* Verify that the messages are in the topic with the command line tools and [control center](http://localhost:9021/)
 * Figure out what is the configuration for the producers' `client.id`
 * Figure out how many roundtrips you got to the broker
 * Set the `linger.ms` to 100 and verify it is working 
