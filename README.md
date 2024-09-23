@@ -1,11 +1,5 @@
 # Kafka training
 
-## Slides
-
-<http://spoud-training-kafka.s3-website.eu-central-1.amazonaws.com/JqSAU_Ay7/index.html>
-
-There you will also find the quizzes to test your knowledge.
-
 ## Get your Kafka practice in hands-on exercises and demos
 
 ### Structure of this repository
