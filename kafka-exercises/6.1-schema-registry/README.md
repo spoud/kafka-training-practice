@@ -47,7 +47,13 @@ You can access it with `docker-compose exec schema-registry bash` and then execu
 
    Provide input: `{"make": "Ford", "model": "Mustang", "price": 10000}`, press `ENTER` then end with `CTRL+C`
 
-6. What happens when you try to register schema version 3, which adds a new field "color"? Why could this version be incompatible?
+6. Consume the message from the topic:
+
+  ```bash
+  kafka-avro-console-consumer --bootstrap-server broker:29092 --from-beginning --topic cars --property schema.registry.url=http://localhost:8081 --group mygroup
+  ```
+
+7. What happens when you try to register schema version 3, which adds a new field "color"? Why could this version be incompatible?
 
   ```bash
   curl -w "\n" -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
@@ -55,24 +61,26 @@ You can access it with `docker-compose exec schema-registry bash` and then execu
   http://localhost:8081/subjects/cars-value/versions
   ```
 
-7. Change the compatibility mode for the subject to `FORWARD`, then try registering the v3 schema again (step 6).
+8. Change the compatibility mode for the subject to `FORWARD`, then try registering the v3 schema again (step 7).
 
   ```bash
   curl -w "\n" -X PUT -H "Content-Type: application/json" -d '{"compatibility": "FORWARD"}' \
   http://localhost:8081/config/cars-value
   ```
 
-8. There should now be 3 versions available:
+9. There should now be 3 versions available:
 
   ```bash
   curl -w "\n" http://localhost:8081/subjects/cars-value/versions
   ```
 
-9. Can you read the v2 message, even when v3 is the latest version?
+10. Can you read the v2 message, even when v3 is the latest version?
 
   ```bash
-  kafka-avro-console-consumer --bootstrap-server broker:29092 --from-beginning --topic cars --property schema.registry.url=http://localhost:8081
+  kafka-avro-console-consumer --bootstrap-server broker:29092 --from-beginning --topic cars --property schema.registry.url=http://localhost:8081 --group mygroup2
   ```
+
+What happened with the new field "color" in the v3 schema?
 
 ## Bonus: Send an avsc file to the schema registry
 
@@ -80,34 +88,37 @@ You can access it with `docker-compose exec schema-registry bash` and then execu
 jq '. | {schema: tojson}' cars-value-v1.avsc | curl -w "\n" -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" -d @- http://localhost:8081/subjects/cars-value/versions
 ```
 
-## Bonus: schema compatibility groups
 
-Try out the new `compatibilityGroup` feature.
 
-<https://docs.confluent.io/platform/7.6/schema-registry/fundamentals/data-contracts.html#configuration-enhancements>
-
-10. Delete subject permanently
+11. Delete subject permanently
 
   ```bash
   curl -w "\n" -X DELETE http://localhost:8081/subjects/cars-value
   curl -w "\n" -X DELETE http://localhost:8081/subjects/cars-value?permanent=true
   ```
 
-11. From the broker container delete topic `cars`:
+12. From the broker container delete topic `cars`:
 
   ```bash
   docker-compose exec broker kafka-topics --bootstrap-server broker:29092 --delete --topic cars
   ```
 
-12. Follow steps 1 - 6 from above. Then:
 
-13. Change the compatibility mode for the subject to FORWARD. We also set a `compatibilityGroup` so that compatibility is only checked for schemas that belong to the same major application version:
+## Bonus: schema compatibility groups
+
+Try out the new `compatibilityGroup` feature.
+
+<https://docs.confluent.io/platform/7.6/schema-registry/fundamentals/data-contracts.html#configuration-enhancements>
+
+1. Follow steps 1 - 6 from above. Then:
+
+2. Change the compatibility mode for the subject to FORWARD. We also set a `compatibilityGroup` so that compatibility is only checked for schemas that belong to the same major application version:
 
   ```bash
   curl -w "\n" -X PUT -H "Content-Type: application/json" -d '{"compatibility": "FORWARD", "compatibilityGroup": "application.major.version"}' http://localhost:8081/config/cars-value
   ```
 
-14. then try registering the v3 schema again:
+3. then try registering the v3 schema again:
 
   ```bash
   curl -w "\n" -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
@@ -115,19 +126,19 @@ Try out the new `compatibilityGroup` feature.
   http://localhost:8081/subjects/cars-value/versions
   ```
 
-15. There should now be 3 versions available:
+4. There should now be 3 versions available:
 
   ```bash
   curl -w "\n" http://localhost:8081/subjects/cars-value/versions
   ```
 
-16. Can you read the v2 message, even when v3 is the latest version?
+5. Can you read the v2 message, even when v3 is the latest version?
 
   ```bash
   kafka-avro-console-consumer --bootstrap-server broker:29092 --from-beginning --topic cars --property schema.registry.url=http://localhost:8081
   ```
 
-17. You can register an incompatible schema if you change the major application version
+6. You can register an incompatible schema if you change the major application version
 
   ```bash
   curl -w "\n" -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \

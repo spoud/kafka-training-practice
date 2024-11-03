@@ -1,14 +1,23 @@
 package io.spoud.training;
 
+import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
+import io.confluent.kafka.schemaregistry.client.SchemaRegistryClientConfig;
+import io.confluent.kafka.schemaregistry.client.SchemaRegistryClientFactory;
+import io.confluent.kafka.streams.serdes.avro.GenericAvroSerde;
+import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
+import io.smallrye.common.annotation.Identifier;
+import jakarta.inject.Inject;
+import org.apache.kafka.common.serialization.Serde;
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.kstream.GlobalKTable;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.TimeWindows;
-import org.apache.kafka.streams.kstream.Windows;
+import org.apache.kafka.streams.kstream.*;
+import org.apache.kafka.streams.state.WindowStore;
 import org.jboss.logging.Logger;
 
 import java.time.Duration;
+import java.util.Map;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
@@ -29,14 +38,19 @@ public class StreamsTopology {
         GlobalKTable<Integer, WeatherStation> stations = builder.globalTable(WEATHER_STATIONS_TOPIC);
         KStream<Integer, TemperatureReading> tempReadings = builder.stream(TEMPERATURE_VALUES_TOPIC);
 
+        Serde<AggregationResult> valueSerde = new SpecificAvroSerde<>();
+        valueSerde.configure(Map.of("schema.registry.url", "http://localhost:8081"), false);
+
         tempReadings.join(stations,
                         // keyValueMapper
                         (stationId1, temperature) -> stationId1,
                         // joiner
                         (temperatureReading, station) -> TemperatureReading.newBuilder(temperatureReading).setStationName(station.getName()).build())
                 .groupByKey()
-                .windowedBy(TimeWindows.of(Duration.ofSeconds(10))) // aggregate over a time window of 10 seconds
-                .aggregate(() -> AggregationResult.newBuilder().setStationId(-1).setStationName("").build(),
+                // if you want to use a window enable the following line and also switch the serde in the to()
+                //.windowedBy(TimeWindows.of(Duration.ofSeconds(10))) // aggregate over a time window of 10 seconds
+                .aggregate(
+                        () -> AggregationResult.newBuilder().setStationId(-1).setStationName("").build(),
                         (stationId, value, aggregation) -> {
                             aggregation.setStationName(value.getStationName());
                             aggregation.setStationId(value.getStationId());
@@ -49,8 +63,8 @@ public class StreamsTopology {
                         })
                 .toStream()
                 .peek((stationId, aggregation) -> LOG.infov("station: {0}, aggregation: {1}", stationId, aggregation))
-                .to(TEMPERATURES_AGGREGATED_TOPIC);
-
+                .to(TEMPERATURES_AGGREGATED_TOPIC); // without windowing
+                //.to(TEMPERATURES_AGGREGATED_TOPIC, Produced.with(WindowedSerdes.timeWindowedSerdeFrom(Integer.class, Duration.ofSeconds(10).toMillis()), valueSerde));
         return builder.build();
     }
 
