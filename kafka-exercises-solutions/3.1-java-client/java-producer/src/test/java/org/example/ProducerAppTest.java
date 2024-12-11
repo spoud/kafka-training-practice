@@ -5,7 +5,7 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.junit.Before;
 import org.junit.Test;
-import org.testcontainers.containers.KafkaContainer;
+import org.testcontainers.kafka.ConfluentKafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import java.time.Duration;
@@ -17,10 +17,10 @@ import java.util.Properties;
 public class ProducerAppTest
     extends TestCase
 {
-    KafkaContainer kafka;
+    ConfluentKafkaContainer kafka;
     @Before
     public void setUp() throws Exception {
-        kafka= new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.6.1"));
+        kafka= new ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.8.0"));
         kafka.start();
     }
     @Test
