@@ -109,15 +109,18 @@ INSERT INTO pageviews_per_region
 
 ## Datastream API
 
-
+```bash
 export SCHEMA=$(cat kafka-demos/flink/datastream/src/main/avro/inventory.avsc | jq -c @json)
 cat kafka-demos/flink/datastream/src/main/resources/datagen-connector.inventory.config | envsubst |
 curl -X POST -H "Content-Type: application/json" --data-binary @- http://localhost:8083/connectors
+```
 
 
+```bash
 export SCHEMA=$(cat kafka-demos/flink/datastream/src/main/avro/orders.avsc | jq -c @json)
 cat kafka-demos/flink/datastream/src/main/resources/datagen-connector.orders.config | envsubst |
 curl -X POST -H "Content-Type: application/json" --data-binary @- http://localhost:8083/connectors
+```
 
 ## Check status
 

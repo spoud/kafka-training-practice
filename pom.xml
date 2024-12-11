@@ -18,11 +18,11 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.16.1</quarkus.platform.version>
+        <quarkus.platform.version>3.17.3</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.5.2</surefire-plugin.version>
-        <confluent.version>7.7.1</confluent.version>
-        <kafka.version>3.8.0</kafka.version> <!-- this must not be a confluent version like <kafka.version>7.7.1-ce</kafka.version> -->
+        <confluent.version>7.8.0</confluent.version>
+        <kafka.version>3.9.0</kafka.version> <!-- this must not be a confluent version like <kafka.version>7.7.1-ce</kafka.version> -->
     </properties>
     <modules>
         <!-- demos -->
@@ -74,7 +74,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>kafka</artifactId>
-            <version>1.20.3</version>
+            <version>1.20.4</version>
             <scope>test</scope>
         </dependency>
 
@@ -88,7 +88,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.34</version>
+            <version>1.18.36</version>
             <scope>provided</scope>
         </dependency>
 
