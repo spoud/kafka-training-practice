@@ -49,3 +49,13 @@ See also https://kafka.apache.org/11/documentation.html#recordbatch.
 * Observe the output
 * Eventually set some breakpoints in the code to see what happens
 * Experiment with different batch sizes and compression types and the other settings
+
+
+## How could we change the Kafka client properties on the fly?
+
+We cannot change the properties once the KafkaProducer or KafkaConsumer is created.
+If we need to change it we could stop the producer or consumer and create a new one with the new properties.
+This is demonstrated in `ProducerChangeProperties` class.
+
+**WARNING**: Be aware that a change in the Consumer properties will trigger a rebalance with may lead to a change back of properties on other consumers.
+Such things can cause rebalance loops and cause a lot of trouble.
