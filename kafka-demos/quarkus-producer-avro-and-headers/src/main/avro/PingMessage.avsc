@@ -1,0 +1,8 @@
+{
+  "type": "record",
+  "name": "PingMessage",
+  "namespace": "io.spoud.training",
+  "fields": [
+    {"name": "number", "type": "int"}
+  ]
+}
