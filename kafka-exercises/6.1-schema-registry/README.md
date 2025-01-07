@@ -61,6 +61,15 @@ You can access it with `docker-compose exec schema-registry bash` and then execu
   http://localhost:8081/subjects/cars-value/versions
   ```
 
+You can check compatibility by issuing the following command:
+
+```bash
+  curl -w "\n" -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+  -d '{"schema": "{\"type\": \"record\", \"name\": \"Car\", \"namespace\": \"io.spoud.training\", \"fields\": [{\"name\": \"make1\", \"type\": \"string\"}, {\"name\": \"model\", \"type\": \"string\"}, {\"name\": \"price\", \"type\": \"int\", \"default\": 0}]}"}' \
+  http://localhost:8081/compatibility/subjects/cars-value/versions/latest?verbose=true
+```
+
+
 8. Change the compatibility mode for the subject to `FORWARD`, then try registering the v3 schema again (step 7).
 
   ```bash
