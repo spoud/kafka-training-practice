@@ -21,7 +21,7 @@
         <quarkus.platform.version>3.18.4</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.5.2</surefire-plugin.version>
-        <confluent.version>7.8.1</confluent.version>
+        <confluent.version>7.9.0</confluent.version>
         <kafka.version>7.8.1-ce</kafka.version> <!-- this must not be a confluent version like <kafka.version>7.7.1-ce</kafka.version> -->
     </properties>
     <modules>
