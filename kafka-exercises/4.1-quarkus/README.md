@@ -14,7 +14,7 @@ You find the following two services in this folder:
 
 ## Try out Kafka Dev UI
 
-* Navigate to <http://localhost:7981/q/dev/io.quarkus.quarkus-kafka-client/kafka-dev-ui> and try out the Dev UI
+* Navigate to <http://localhost:7981/q/dev-ui/io.quarkus.quarkus-kafka-client/topics> and try out the Dev UI
 
 ## Check the health status of your application
 
@@ -66,7 +66,7 @@ Add the following dependency to the `pom.xml`:
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-test-kafka-companion</artifactId>
       <scope>test</scope>
-    </dependency> 
+    </dependency>
 ```
 
 Add the following properties to the `application.properties`:
