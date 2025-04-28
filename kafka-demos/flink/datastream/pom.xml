@@ -31,7 +31,7 @@ under the License.
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<flink.version>2.0-preview1</flink.version>
-		<kafka-flink.vesion>3.4.0-1.20</kafka-flink.vesion>
+		<kafka-flink.vesion>4.0.0-2.0</kafka-flink.vesion>
 		<target.java.version>17</target.java.version>
 		<maven.compiler.source>${target.java.version}</maven.compiler.source>
 		<maven.compiler.target>${target.java.version}</maven.compiler.target>
