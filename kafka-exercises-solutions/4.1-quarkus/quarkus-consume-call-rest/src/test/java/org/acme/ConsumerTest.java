@@ -1,20 +1,19 @@
 package org.acme;
 
 import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
 import io.quarkus.test.kafka.InjectKafkaCompanion;
 import io.quarkus.test.kafka.KafkaCompanionResource;
 import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
 import io.smallrye.reactive.messaging.kafka.companion.ProducerTask;
+import jakarta.inject.Inject;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.ConsumerGroupState;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
-import java.util.Optional;
 
 import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,9 +26,14 @@ public class ConsumerTest {
     @InjectKafkaCompanion
     KafkaCompanion companion;
 
-    @InjectMock
-    @RestClient
+    @Inject
     SampleRestClient sampleRestClient;
+
+    @BeforeAll
+    public static void beforeAll() {
+        SampleRestClient sampleRestClientMock = mock(SampleRestClient.class);
+        QuarkusMock.installMockForType(sampleRestClientMock, SampleRestClient.class);
+    }
 
     @Before
     public void setup() {
