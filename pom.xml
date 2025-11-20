@@ -22,7 +22,8 @@
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.5.4</surefire-plugin.version>
         <confluent.version>8.1.0</confluent.version>
-        <kafka.version>8.1.0-ce</kafka.version> <!-- this must not be a confluent version like <kafka.version>7.7.1-ce</kafka.version> -->
+        <kafka.version>8.1.0-ce
+        </kafka.version> <!-- this must not be a confluent version like <kafka.version>7.7.1-ce</kafka.version> -->
     </properties>
     <modules>
         <!-- demos -->
@@ -34,21 +35,21 @@
         <!-- resources -->
         <module>resources/services/crappy-echo-service</module>
 
-        
+        <!-- Uncomment the folling line if you quickly wan't to build everything-->
         <!-- exercices -->
-<!--        <module>kafka-exercises/3.1-java-client/java-consumer</module>-->
-<!--        <module>kafka-exercises/3.1-java-client/java-producer</module>-->
-<!--        <module>kafka-exercises/4.1-quarkus/quarkus-consume-call-rest</module>-->
-<!--        <module>kafka-exercises/4.1-quarkus/quarkus-producer-from-rest</module>-->
-<!--        <module>kafka-exercises/6.2-java-avro-clients/java-avro-producer</module>-->
-<!--        <module>kafka-exercises/6.2-java-avro-clients/quarkus-avro-consumer</module>-->
-<!--         exercices-solutions -->
-        <module>kafka-exercises-solutions/3.1-java-client/java-consumer</module>
-        <module>kafka-exercises-solutions/3.1-java-client/java-producer</module>
-        <module>kafka-exercises-solutions/4.1-quarkus/quarkus-producer-from-rest</module>
-        <module>kafka-exercises-solutions/4.1-quarkus/quarkus-consume-call-rest</module>
-        <module>kafka-exercises-solutions/6.2-java-avro-clients/quarkus-avro-consumer</module>
-        <module>kafka-exercises-solutions/6.2-java-avro-clients/java-avro-producer</module>
+        <!--        <module>kafka-exercises/3.1-java-client/java-consumer</module>-->
+        <!--        <module>kafka-exercises/3.1-java-client/java-producer</module>-->
+        <!--        <module>kafka-exercises/4.1-quarkus/quarkus-consume-call-rest</module>-->
+        <!--        <module>kafka-exercises/4.1-quarkus/quarkus-producer-from-rest</module>-->
+        <!--        <module>kafka-exercises/6.2-java-avro-clients/java-avro-producer</module>-->
+        <!--        <module>kafka-exercises/6.2-java-avro-clients/quarkus-avro-consumer</module>-->
+        <!-- exercices-solutions -->
+        <!--        <module>kafka-exercises-solutions/3.1-java-client/java-consumer</module>-->
+        <!--        <module>kafka-exercises-solutions/3.1-java-client/java-producer</module>-->
+        <!--        <module>kafka-exercises-solutions/4.1-quarkus/quarkus-producer-from-rest</module>-->
+        <!--        <module>kafka-exercises-solutions/4.1-quarkus/quarkus-consume-call-rest</module>-->
+        <!--        <module>kafka-exercises-solutions/6.2-java-avro-clients/quarkus-avro-consumer</module>-->
+        <!--        <module>kafka-exercises-solutions/6.2-java-avro-clients/java-avro-producer</module>-->
     </modules>
     <dependencyManagement>
         <dependencies>
