@@ -1,0 +1,22 @@
+{
+  "type": "record",
+  "name": "CreateEvent",
+  "namespace": "io.spoud.training.recordnamestrategy",
+  "fields": [
+    {
+      "name": "eventId",
+      "type": "string"
+    },
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "name": "created",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }
+    }
+  ]
+}

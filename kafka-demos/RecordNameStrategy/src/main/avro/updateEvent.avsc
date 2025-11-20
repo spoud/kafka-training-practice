@@ -1,0 +1,22 @@
+{
+  "type": "record",
+  "name": "UpdateEvent",
+  "namespace": "io.spoud.training.recordnamestrategy",
+  "fields": [
+    {
+      "name": "eventId",
+      "type": "string"
+    },
+    {
+      "name": "updateCounter",
+      "type": "long"
+    },
+    {
+      "name": "updated",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }
+    }
+  ]
+}
