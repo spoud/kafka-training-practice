@@ -30,12 +30,12 @@ under the License.
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<flink.version>2.0-preview1</flink.version>
-		<kafka-flink.vesion>3.4.0-1.20</kafka-flink.vesion>
+		<flink.version>2.1.1</flink.version>
+		<kafka-flink.vesion>4.0.1-2.0</kafka-flink.vesion>
 		<target.java.version>17</target.java.version>
 		<maven.compiler.source>${target.java.version}</maven.compiler.source>
 		<maven.compiler.target>${target.java.version}</maven.compiler.target>
-		<log4j.version>2.24.2</log4j.version>
+		<log4j.version>2.25.2</log4j.version>
 		<protobuf-version>3.23.2</protobuf-version>
 	</properties>
 
@@ -126,7 +126,7 @@ under the License.
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.14.0</version>
+				<version>3.14.1</version>
 				<configuration>
 					<source>${target.java.version}</source>
 					<target>${target.java.version}</target>
@@ -138,7 +138,7 @@ under the License.
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.6.0</version>
+				<version>3.6.1</version>
 				<executions>
 					<!-- Run shade goal on package phase -->
 					<execution>

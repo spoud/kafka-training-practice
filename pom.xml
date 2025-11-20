@@ -13,16 +13,17 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.release>17</maven.compiler.release>
-        <compiler-plugin.version>3.14.0</compiler-plugin.version>
+        <compiler-plugin.version>3.14.1</compiler-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.21.1</quarkus.platform.version>
+        <quarkus.platform.version>3.29.4</quarkus.platform.version>
         <skipITs>true</skipITs>
-        <surefire-plugin.version>3.5.3</surefire-plugin.version>
-        <confluent.version>7.9.0</confluent.version>
-        <kafka.version>3.9.0</kafka.version> <!-- this must not be a confluent version like <kafka.version>7.7.1-ce</kafka.version> -->
+        <surefire-plugin.version>3.5.4</surefire-plugin.version>
+        <confluent.version>8.1.0</confluent.version>
+        <kafka.version>8.1.0-ce
+        </kafka.version> <!-- this must not be a confluent version like <kafka.version>7.7.1-ce</kafka.version> -->
     </properties>
     <modules>
         <!-- demos -->
@@ -33,6 +34,22 @@
         <module>kafka-demos/quarkus-streams</module>
         <!-- resources -->
         <module>resources/services/crappy-echo-service</module>
+
+        <!-- Uncomment the folling line if you quickly wan't to build everything-->
+        <!-- exercices -->
+        <!--        <module>kafka-exercises/3.1-java-client/java-consumer</module>-->
+        <!--        <module>kafka-exercises/3.1-java-client/java-producer</module>-->
+        <!--        <module>kafka-exercises/4.1-quarkus/quarkus-consume-call-rest</module>-->
+        <!--        <module>kafka-exercises/4.1-quarkus/quarkus-producer-from-rest</module>-->
+        <!--        <module>kafka-exercises/6.2-java-avro-clients/java-avro-producer</module>-->
+        <!--        <module>kafka-exercises/6.2-java-avro-clients/quarkus-avro-consumer</module>-->
+        <!-- exercices-solutions -->
+        <!--        <module>kafka-exercises-solutions/3.1-java-client/java-consumer</module>-->
+        <!--        <module>kafka-exercises-solutions/3.1-java-client/java-producer</module>-->
+        <!--        <module>kafka-exercises-solutions/4.1-quarkus/quarkus-producer-from-rest</module>-->
+        <!--        <module>kafka-exercises-solutions/4.1-quarkus/quarkus-consume-call-rest</module>-->
+        <!--        <module>kafka-exercises-solutions/6.2-java-avro-clients/quarkus-avro-consumer</module>-->
+        <!--        <module>kafka-exercises-solutions/6.2-java-avro-clients/java-avro-producer</module>-->
     </modules>
     <dependencyManagement>
         <dependencies>
@@ -73,13 +90,13 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.5.18</version>
+            <version>1.5.21</version>
         </dependency>
 
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>kafka</artifactId>
-            <version>1.20.6</version>
+            <version>1.21.3</version>
             <scope>test</scope>
         </dependency>
 
@@ -93,7 +110,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.38</version>
+            <version>1.18.42</version>
             <scope>provided</scope>
         </dependency>
 
@@ -105,7 +122,7 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.4.1</version>
+                    <version>3.5.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-site-plugin</artifactId>
@@ -122,15 +139,15 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.14.0</version>
+                    <version>3.14.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.5.3</version>
+                    <version>3.5.4</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.4.2</version>
+                    <version>3.5.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
