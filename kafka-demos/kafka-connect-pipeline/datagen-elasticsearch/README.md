@@ -19,7 +19,7 @@
 * we install the Elasticsearch connector to create an Elasticsearch sink
 
       docker-compose exec connect bash
-      confluent-hub install confluentinc/kafka-connect-elasticsearch:latest
+      confluent-hub install --no-prompt confluentinc/kafka-connect-elasticsearch:latest
 
 * plugin is loaded after when the connect worker restarts
 
