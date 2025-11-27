@@ -14,7 +14,9 @@ You find the following two services in this folder:
 
 ## Try out Kafka Dev UI
 
-* Navigate to <http://localhost:7981/q/dev-ui/io.quarkus.quarkus-kafka-client/topics> and try out the Dev UI
+* Navigate to <http://localhost:7981/q/dev-ui/quarkus-kafka-client/topics> and try out the Dev UI
+
+[//]: # (Maybe quarkus dev-ui for kafka doesn't yet work correctly with newest kafka version)
 
 ## Check the health status of your application
 

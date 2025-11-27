@@ -18,7 +18,7 @@ public class ProducerAppTest extends TestCase {
 
   @Before
   public void setUp() throws Exception {
-    kafka = new ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.8.0"));
+    kafka = new ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:8.1.0"));
     kafka.start();
   }
 

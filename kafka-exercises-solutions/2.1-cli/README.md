@@ -190,13 +190,13 @@ Deep dive article: <https://strimzi.io/blog/2021/12/17/kafka-segment-retention/>
 
 ### Solution
 
-To see the compaction in action you need to add another message after one minute to each partition (use the following keys `p0`, `p1`, `p4`).
+To see the compaction in action you need to add another message after one minute to each partition (use the following keys `key0`, `key1`, `key4`).
 
 ```bash
 sleep 60; 
-echo -e "p0\ttrigger-compaction" | kafka-console-producer --bootstrap-server localhost:9092 --topic scoreboard --property parse.key=true
-echo -e "p1\ttrigger-compaction" | kafka-console-producer --bootstrap-server localhost:9092 --topic scoreboard --property parse.key=true
-echo -e "p4\ttrigger-compaction" | kafka-console-producer --bootstrap-server localhost:9092 --topic scoreboard --property parse.key=true
+echo -e "key0\ttrigger-compaction" | kafka-console-producer --bootstrap-server localhost:9092 --topic scoreboard --property parse.key=true
+echo -e "key1\ttrigger-compaction" | kafka-console-producer --bootstrap-server localhost:9092 --topic scoreboard --property parse.key=true
+echo -e "key4\ttrigger-compaction" | kafka-console-producer --bootstrap-server localhost:9092 --topic scoreboard --property parse.key=true
 ```
 
 ## Read again all data from the scoreboard topic
