@@ -1,0 +1,25 @@
+---
+services:
+  console:
+    image: docker.redpanda.com/redpandadata/console:latest
+    restart: always
+    entrypoint: /bin/sh
+    command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml; /app/console'
+    environment:
+      CONFIG_FILEPATH: /tmp/config.yml
+      CONSOLE_CONFIG_FILE: |
+        kafka:
+          brokers:
+            - "broker:29092"
+        schemaRegistry:
+          enabled: true
+          urls:
+            - "http://schema-registry:8081"
+        kafkaConnect:
+          enabled: true
+          clusters:
+            - name: connect
+              url: "http://connect:8083"
+    ports:
+      - 8080:8080
+
