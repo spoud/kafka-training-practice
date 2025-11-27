@@ -36,7 +36,7 @@ docker-compose up -d
 | Kafka REST Proxy         | [8082](http://localhost:8082) |
 | Kafka Connect            | [8083](http://localhost:8083) |
 | KsqlDB Server            | [8088](http://localhost:8088) |
-| Redpanda console         | [8080](http://localhost:8080) |
+| Redpanda console         | [8084](http://localhost:8084) |
 | AKHQ                     | [8089](http://localhost:8089) |
 | Crappy echo service      | [7980](http://localhost:7980) |
 | Quarkus http server      | [7981](http://localhost:7981) |
