@@ -1,7 +1,7 @@
 ---
 services:
   broker:
-    image: confluentinc/cp-kafka:7.6.1
+    image: confluentinc/cp-kafka:8.1.0
     hostname: broker
     ports:
       - "9092:9092"
@@ -26,14 +26,14 @@ services:
       # See https://docs.confluent.io/kafka/operations-tools/kafka-tools.html#kafka-storage-sh
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
   postgres:
-    image: quay.io/debezium/example-postgres:2.6
+    image: quay.io/debezium/example-postgres:3.3
     ports:
      - 5432:5432
     environment:
      - POSTGRES_USER=postgres
      - POSTGRES_PASSWORD=postgres
   mysql:
-    image: quay.io/debezium/example-mysql:2.6
+    image: quay.io/debezium/example-mysql:3.3
     ports:
      - 3306:3306
     environment:
@@ -43,7 +43,7 @@ services:
     volumes:
      - ./:/setup
   connect:
-    image: quay.io/debezium/connect:2.6
+    image: quay.io/debezium/connect:3.3
     ports:
      - 8083:8083
     links:

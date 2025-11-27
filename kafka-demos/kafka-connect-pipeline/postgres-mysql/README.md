@@ -69,6 +69,8 @@ curl localhost:8083/connectors/postgres-source/offsets | jq
 
 The offsets of a source connector return data specific for the source system. In this case, the log sequence number (LSN) denotes the last position that the connector commited within Postgres.
 
+/!\ Kafka connect has a significant interval for the commit commits of an offset (can be 1-2 minutes). If the offset is empty, try again a few moments.
+
 ```bash
 curl localhost:8083/connectors/mysql-sink/offsets | jq
 ```
