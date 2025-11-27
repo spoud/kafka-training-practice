@@ -32,6 +32,7 @@ fi
 $DOCKER_COMPOSE_COMMAND \
   -f docker-compose.yml \
   -f docker-compose-akhq.yml \
+  -f docker-compose-repanda-console.yml \
   -f docker-compose-elk.yml \
   -f docker-compose-flink.yml \
   -f docker-compose-kcat.yml \
