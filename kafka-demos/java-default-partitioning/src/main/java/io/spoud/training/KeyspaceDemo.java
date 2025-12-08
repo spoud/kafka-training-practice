@@ -26,7 +26,7 @@ public class KeyspaceDemo
             int partition = BuiltInPartitioner.partitionForKey(keyBytes, numPartitions);
 */
 
-            if(keyPerPartition.containsKey(partition)) {
+            if (keyPerPartition.containsKey(partition)) {
                 keyPerPartition.put(partition, keyPerPartition.get(partition) + 1);
             } else {
                 keyPerPartition.put(partition, 1);
@@ -37,7 +37,8 @@ public class KeyspaceDemo
         System.out.println("\n\nKeyspace " + keySpace + "\nKeys per Partition: ");
 
         for (int i = 0; i < numPartitions; i++) {
-            System.out.println("Partition " + i + ": " + keyPerPartition.get(i));
+            System.out.println("Partition " + i + ": " +
+                    "█".repeat(keyPerPartition.getOrDefault(i, 0)) + " (" + keyPerPartition.get(i) + ")");
         }
     }
 }
