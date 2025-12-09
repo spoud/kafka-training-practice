@@ -2,7 +2,7 @@
 
 If you dump messages into a file using e.g. `kafka-avro-console-consumer` you can read them back using the right schema.
 
-This is in no way a complete solution, but it should show whit what issues you have to deal with.
+This is in no way a complete solution, but it should show what issues you have to deal with.
 
 One issue is that you have to know the schema of the messages you are reading. This is not a problem if you are the one who wrote the messages, but if you are reading messages from a topic you don't know the schema of, you have to find it out first.
 
