@@ -7,7 +7,7 @@ In this exercise you will work with
 
 ## Setup
 
-Make sure the kafka services are running with `docker-compose up -d`
+Make sure the kafka services are running with `docker compose up -d`
 
 
 ## Step 1 - Implementing java-avro-producer
@@ -59,7 +59,7 @@ Unfortunately the configuration and some annotations got lost...
 
 * Stop the producer and keep the consumer running
 * Send a message to the topic `employees-avro` using the following commands:
-  * `docker-compose exec broker bash`
+  * `docker compose exec broker bash`
   * `kafka-console-producer --topic employees-avro --bootstrap-server broker:29092`
   * Then type a string, such as "employee" and hit enter to send the message.
 * What happened to the consumer when it tried to deserialize this message?

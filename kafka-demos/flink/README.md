@@ -2,11 +2,11 @@
 
 ## Prepare Environment
 
-1. start the flink cluster and its dependencies
+1. start the flink cluster and its dependencies if it's not already started by the start.sh script
 
 ```bash
-      docker-compose up -d broker connect schema-registry ksql-datagen
-      docker-compose -f docker-compose-flink.yml up -d
+      docker compose up -d broker connect schema-registry ksql-datagen
+      docker compose -f docker compose-flink.yml up -d
 ```
 
 2. open the flink dashboard
@@ -16,23 +16,23 @@ http://localhost:8090
 3. start the ksql-datagen to produce data
 
 ```bash
-      docker-compose exec ksql-datagen ksql-datagen quickstart=users format=json topic=users maxInterval=1000 msgRate=4 iterations=100 bootstrap-server=broker:29092
+      docker compose exec ksql-datagen ksql-datagen quickstart=users format=json topic=users maxInterval=1000 msgRate=4 iterations=100 bootstrap-server=broker:29092
       
-      docker-compose exec ksql-datagen ksql-datagen quickstart=pageviews format=json topic=pageviews maxInterval=1000 msgRate=4 iterations=1000000 bootstrap-server=broker:29092
+      docker compose exec ksql-datagen ksql-datagen quickstart=pageviews format=json topic=pageviews maxInterval=1000 msgRate=4 iterations=1000000 bootstrap-server=broker:29092
 ```
 
 4. check the data in the topics
 
 ```bash
-      docker-compose exec broker kafka-console-consumer --bootstrap-server broker:29092 --topic users --from-beginning --property print.key=true --property key.separator=,
+      docker compose exec broker kafka-console-consumer --bootstrap-server broker:29092 --topic users --from-beginning --property print.key=true --property key.separator=,
       
-      docker-compose exec broker kafka-console-consumer --bootstrap-server broker:29092 --topic pageviews --from-beginning --property print.key=true --property key.separator=,
+      docker compose exec broker kafka-console-consumer --bootstrap-server broker:29092 --topic pageviews --from-beginning --property print.key=true --property key.separator=,
 ```
 
 5. enter flink sql container
 
 ```bash
-      docker-compose exec sql-client bin/sql-client.sh
+      docker compose exec sql-client bin/sql-client.sh
 ```
 
 6. run the flink sql queries
@@ -112,26 +112,30 @@ INSERT INTO pageviews_per_region
 ```bash
 export SCHEMA=$(cat kafka-demos/flink/datastream/src/main/avro/inventory.avsc | jq -c @json)
 cat kafka-demos/flink/datastream/src/main/resources/datagen-connector.inventory.config | envsubst |
-curl -X POST -H "Content-Type: application/json" --data-binary @- http://localhost:8083/connectors
+curl -X POST -H "Content-Type: application/json" --data-binary @- http://localhost:8083/connectors | jq .
 ```
 
 
 ```bash
 export SCHEMA=$(cat kafka-demos/flink/datastream/src/main/avro/orders.avsc | jq -c @json)
 cat kafka-demos/flink/datastream/src/main/resources/datagen-connector.orders.config | envsubst |
-curl -X POST -H "Content-Type: application/json" --data-binary @- http://localhost:8083/connectors
+curl -X POST -H "Content-Type: application/json" --data-binary @- http://localhost:8083/connectors | jq .
 ```
 
 ## Check status
 
 ```bash
-      curl http://localhost:8083/connectors/datagen-inventory/status
-      curl http://localhost:8083/connectors/datagen-orders/status
+      curl http://localhost:8083/connectors/datagen-inventory/status | jq .
+      curl http://localhost:8083/connectors/datagen-orders/status | jq .
 ```
 
 ## Run the Flink Job
 
 In intellij run the DataStreamDemo class. Make sure you have "Add dependencies with 'provided' scope" enabled in the maven settings / run configuration.
+
+> Go to the Run / Debug Configuration in Intellij, click on "Modify options" and select "Add dependencies with 'provided' scope to classpath"
+
+![intellij-config.png](intellij-config.png)
 
 
 Observe the output in the console.
@@ -149,6 +153,6 @@ Observe the output in the console.
       curl -X DELETE http://localhost:8081/subjects/orders-value
       curl -X DELETE http://localhost:8081/subjects/orders-value?permanent=true
 
-      docker-compose down -v
+      docker compose down -v
       
 ```

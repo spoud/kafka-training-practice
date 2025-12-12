@@ -8,13 +8,13 @@
 
 ## Setup
 
-- Start your docker-compose environment with the start script `./start.sh`
+- Start your docker compose environment with the start script `./start.sh`
 - Check that the broker is running with the control center on <http://localhost:9021>
 
 There is a `kcat` container waiting for you to be used.
 
 ```bash
-docker-compose -f docker-compose.yml -f docker-compose-kcat.yml exec kcat sh
+docker compose -f docker compose.yml -f docker compose-kcat.yml exec kcat sh
 ```
 
 Within the container run `kcat` commands like the following to list the metadata:
@@ -27,7 +27,7 @@ kcat -b localhost:9092 -L  # on your local machine
 You can run the Kafka client CLI within the broker container:
 
 ```bash
-docker-compose exec broker bash
+docker compose exec broker bash
 ```
 
 List the topic with the Kafka client CLI:

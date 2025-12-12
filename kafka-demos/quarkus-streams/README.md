@@ -11,7 +11,7 @@ The project is based on the streams example from https://github.com/quarkusio/qu
 
 ## Running the application in dev mode
 
-Start the confluent  docker-compose services if they aren't running.
+Start the confluent  docker compose services if they aren't running.
 
 You can run your application in dev mode that enables live coding using:
 

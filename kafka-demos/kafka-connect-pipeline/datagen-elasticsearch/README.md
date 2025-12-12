@@ -5,7 +5,7 @@
 1. start the connect-worker and its dependencies
 
 ```bash
-      docker compose -f docker-compose-elk.yml -f docker-compose.yml up -d broker connect schema-registry elasticsearch kibana
+      docker compose -f docker compose-elk.yml -f docker compose.yml up -d broker connect schema-registry elasticsearch kibana
 ```
 
 2. install the plugins we are going to use
@@ -18,13 +18,13 @@
 
 * we install the Elasticsearch connector to create an Elasticsearch sink
 
-      docker-compose exec connect bash
+      docker compose exec connect bash
       confluent-hub install --no-prompt confluentinc/kafka-connect-elasticsearch:latest
 
 * plugin is loaded after when the connect worker restarts
 
       curl localhost:8083/connector-plugins | jq
-      docker-compose restart connect
+      docker compose restart connect
 
 ## Configuring Source and Sink Connectors
 
@@ -37,7 +37,7 @@
 
 * Check topic contents
 
-      docker-compose exec connect bash
+      docker compose exec connect bash
       kafka-avro-console-consumer --bootstrap-server broker:29092 --topic purchases --from-beginning --property print.key=false --property schema.registry.url=http://schema-registry:8081
 
 * Sink connector
@@ -56,6 +56,6 @@
 
 ## Tear Down
 
-`docker-compose stop`
+`docker compose stop`
 
 
