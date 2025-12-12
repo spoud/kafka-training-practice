@@ -5,8 +5,8 @@
 1. start the flink cluster and its dependencies
 
 ```bash
-      docker-compose up -d broker connect schema-registry ksql-datagen
-      docker-compose -f docker-compose-flink.yml up -d
+      docker compose up -d broker connect schema-registry ksql-datagen
+      docker compose -f docker compose-flink.yml up -d
 ```
 
 2. open the flink dashboard
@@ -16,23 +16,23 @@ http://localhost:8090
 3. start the ksql-datagen to produce data
 
 ```bash
-      docker-compose exec ksql-datagen ksql-datagen quickstart=users format=json topic=users maxInterval=1000 msgRate=4 iterations=100 bootstrap-server=broker:29092
+      docker compose exec ksql-datagen ksql-datagen quickstart=users format=json topic=users maxInterval=1000 msgRate=4 iterations=100 bootstrap-server=broker:29092
       
-      docker-compose exec ksql-datagen ksql-datagen quickstart=pageviews format=json topic=pageviews maxInterval=1000 msgRate=4 iterations=1000000 bootstrap-server=broker:29092
+      docker compose exec ksql-datagen ksql-datagen quickstart=pageviews format=json topic=pageviews maxInterval=1000 msgRate=4 iterations=1000000 bootstrap-server=broker:29092
 ```
 
 4. check the data in the topics
 
 ```bash
-      docker-compose exec broker kafka-console-consumer --bootstrap-server broker:29092 --topic users --from-beginning --property print.key=true --property key.separator=,
+      docker compose exec broker kafka-console-consumer --bootstrap-server broker:29092 --topic users --from-beginning --property print.key=true --property key.separator=,
       
-      docker-compose exec broker kafka-console-consumer --bootstrap-server broker:29092 --topic pageviews --from-beginning --property print.key=true --property key.separator=,
+      docker compose exec broker kafka-console-consumer --bootstrap-server broker:29092 --topic pageviews --from-beginning --property print.key=true --property key.separator=,
 ```
 
 5. enter flink sql container
 
 ```bash
-      docker-compose exec sql-client bin/sql-client.sh
+      docker compose exec sql-client bin/sql-client.sh
 ```
 
 6. run the flink sql queries
@@ -149,6 +149,6 @@ Observe the output in the console.
       curl -X DELETE http://localhost:8081/subjects/orders-value
       curl -X DELETE http://localhost:8081/subjects/orders-value?permanent=true
 
-      docker-compose down -v
+      docker compose down -v
       
 ```

@@ -3,7 +3,7 @@
 
 ## How to run
 
-* Start kafka (`docker-compose up -d broker`)
+* Start kafka (`docker compose up -d broker`)
 * Create a topic with 9 partitions:  
   `kafka-topics --create --topic consumer-liveness --bootstrap-server localhost:9092 --partitions 9`
 * Run the `Producer` to create sample messages
