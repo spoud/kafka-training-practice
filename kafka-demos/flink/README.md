@@ -2,7 +2,7 @@
 
 ## Prepare Environment
 
-1. start the flink cluster and its dependencies
+1. start the flink cluster and its dependencies if it's not already started by the start.sh script
 
 ```bash
       docker compose up -d broker connect schema-registry ksql-datagen
@@ -112,26 +112,30 @@ INSERT INTO pageviews_per_region
 ```bash
 export SCHEMA=$(cat kafka-demos/flink/datastream/src/main/avro/inventory.avsc | jq -c @json)
 cat kafka-demos/flink/datastream/src/main/resources/datagen-connector.inventory.config | envsubst |
-curl -X POST -H "Content-Type: application/json" --data-binary @- http://localhost:8083/connectors
+curl -X POST -H "Content-Type: application/json" --data-binary @- http://localhost:8083/connectors | jq .
 ```
 
 
 ```bash
 export SCHEMA=$(cat kafka-demos/flink/datastream/src/main/avro/orders.avsc | jq -c @json)
 cat kafka-demos/flink/datastream/src/main/resources/datagen-connector.orders.config | envsubst |
-curl -X POST -H "Content-Type: application/json" --data-binary @- http://localhost:8083/connectors
+curl -X POST -H "Content-Type: application/json" --data-binary @- http://localhost:8083/connectors | jq .
 ```
 
 ## Check status
 
 ```bash
-      curl http://localhost:8083/connectors/datagen-inventory/status
-      curl http://localhost:8083/connectors/datagen-orders/status
+      curl http://localhost:8083/connectors/datagen-inventory/status | jq .
+      curl http://localhost:8083/connectors/datagen-orders/status | jq .
 ```
 
 ## Run the Flink Job
 
 In intellij run the DataStreamDemo class. Make sure you have "Add dependencies with 'provided' scope" enabled in the maven settings / run configuration.
+
+> Go to the Run / Debug Configuration in Intellij, click on "Modify options" and select "Add dependencies with 'provided' scope to classpath"
+
+![intellij-config.png](intellij-config.png)
 
 
 Observe the output in the console.
