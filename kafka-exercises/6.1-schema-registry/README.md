@@ -6,11 +6,11 @@
 
 ## Preparation
 
-* Start the required docker compose services with `docker-compose up -d broker schema-registry`
+* Start the required docker compose services with `docker compose up -d broker schema-registry`
 * **Note**: If you don't have `curl` installed on your PC, then you can also execute these commands inside the schema-registry container:
-`docker-compose exec schema-registry bash`
+`docker compose exec schema-registry bash`
 * **Note**: The `kafka-avro-console-producer` and `kafka-avro-console-consumer` tools are installed in the `schema-registry` container.
-You can access it with `docker-compose exec schema-registry bash` and then execute the commands.
+You can access it with `docker compose exec schema-registry bash` and then execute the commands.
 
 ## Exercise - Schema Registry API
 
@@ -109,7 +109,7 @@ jq '. | {schema: tojson}' cars-value-v1.avsc | curl -w "\n" -X POST -H "Content-
 12. From the broker container delete topic `cars`:
 
   ```bash
-  docker-compose exec broker kafka-topics --bootstrap-server broker:29092 --delete --topic cars
+  docker compose exec broker kafka-topics --bootstrap-server broker:29092 --delete --topic cars
   ```
 
 
