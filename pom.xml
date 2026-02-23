@@ -20,7 +20,7 @@
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.version>3.29.4</quarkus.platform.version>
         <skipITs>true</skipITs>
-        <surefire-plugin.version>3.5.4</surefire-plugin.version>
+        <surefire-plugin.version>3.5.5</surefire-plugin.version>
         <confluent.version>8.1.1</confluent.version>
         <kafka.version>4.1.1
         </kafka.version> <!-- this MUST BE a kafka OSS version (ex 4.x), and NOT a confluent version (ex 8.x) -->
@@ -148,7 +148,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.5.4</version>
+                    <version>3.5.5</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
