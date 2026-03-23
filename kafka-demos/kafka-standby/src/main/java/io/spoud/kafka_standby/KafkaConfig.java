@@ -1,6 +1,8 @@
 package io.spoud.kafka_standby;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRebalanceListener;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,7 @@ import org.springframework.kafka.listener.MessageListenerContainer;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,6 +48,7 @@ public class KafkaConfig {
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, 15_000);
         return new DefaultKafkaConsumerFactory<>(props);
     }
 
@@ -53,10 +57,21 @@ public class KafkaConfig {
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>(
         );
         factory.setConsumerFactory(consumerFactory());
+        factory.getContainerProperties().setConsumerRebalanceListener(new ConsumerRebalanceListener() {
+            @Override
+            public void onPartitionsRevoked(Collection<TopicPartition> partitions) {
+                log.info("Consumer rebalance: partitions revoked: {}", partitions);
+            }
+
+            @Override
+            public void onPartitionsAssigned(Collection<TopicPartition> partitions) {
+                log.info("Consumer rebalance: partitions assigned: {}", partitions);
+            }
+        });
         factory.setContainerCustomizer(container -> {
             if (featureFlagService.isStandbyModeEnabled()) {
                 log.info("Pausing Kafka consumer at startup: {}", container.getListenerId());
-                container.pause();
+                container.stop();
             } else {
                 log.info("This application is not in standby mode. Will run Kafka consumer: {}", container.getListenerId());
             }
@@ -69,18 +84,18 @@ public class KafkaConfig {
         if (featureFlagService.isStandbyModeEnabled()) {
             registry.getAllListenerContainers()
                     .stream()
-                    .filter(container -> !container.isContainerPaused())
+                    .filter(Lifecycle::isRunning)
                     .forEach(container -> {
                         log.info("Pausing Kafka consumer: {}", container.getListenerId());
-                        container.pause();
+                        container.stop();
                     });
         } else {
             registry.getAllListenerContainers()
                     .stream()
-                    .filter(MessageListenerContainer::isContainerPaused)
+                    .filter(container -> !container.isRunning())
                     .forEach(container -> {
                         log.info("Resuming Kafka consumer: {}", container.getListenerId());
-                        container.resume();
+                        container.start();
                     });
         }
     }
