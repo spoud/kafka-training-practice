@@ -14,3 +14,5 @@ central configuration class, thus making this solution portable across projects.
 1. If the `standby` flag is enabled, the application will not consume messages (only production will be logged)
 1. If the `standby` flag is disabled, the application will consume messages
 1. Toggling from one state to another will eventually lead to the application consuming messages again (the feature flag is checked every 5 seconds)
+
+For details on how this is implemented, see `KafkaConfig.java`
