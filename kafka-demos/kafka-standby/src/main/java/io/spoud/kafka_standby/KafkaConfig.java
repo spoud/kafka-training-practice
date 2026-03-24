@@ -1,5 +1,6 @@
 package io.spoud.kafka_standby;
 
+import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRebalanceListener;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.common.TopicPartition;
@@ -16,6 +17,7 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.listener.ConsumerAwareRebalanceListener;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -52,15 +54,15 @@ public class KafkaConfig {
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>(
         );
         factory.setConsumerFactory(consumerFactory());
-        factory.getContainerProperties().setConsumerRebalanceListener(new ConsumerRebalanceListener() {
+        factory.getContainerProperties().setConsumerRebalanceListener(new ConsumerAwareRebalanceListener() {
             @Override
-            public void onPartitionsRevoked(Collection<TopicPartition> partitions) {
-                log.info("Consumer rebalance: partitions revoked: {}", partitions);
+            public void onPartitionsRevokedAfterCommit(Consumer<?, ?> consumer, Collection<TopicPartition> partitions) {
+                log.info("Revoked partitions: {}", partitions);
             }
 
             @Override
-            public void onPartitionsAssigned(Collection<TopicPartition> partitions) {
-                log.info("Consumer rebalance: partitions assigned: {}", partitions);
+            public void onPartitionsAssigned(Consumer<?, ?> consumer, Collection<TopicPartition> partitions) {
+                log.info("Assigned partitions: {}", partitions);
             }
         });
         factory.setContainerCustomizer(container -> {
