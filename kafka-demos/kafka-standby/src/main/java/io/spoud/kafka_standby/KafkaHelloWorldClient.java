@@ -26,8 +26,12 @@ public class KafkaHelloWorldClient {
     @Scheduled(fixedRate = 1000)
     public void produceHelloWorld() {
         String message = "Hello World";
-        logger.info("Producing message: {} to topic: {}", message, TOPIC);
-        kafkaTemplate.send(TOPIC, message);
+        try {
+            kafkaTemplate.send(TOPIC, message);
+            logger.info("Produced message: {} to topic: {}", message, TOPIC);
+        } catch (StandbyAwareProducer.ProducerOnStandbyException ex) {
+            logger.warn(ex.getMessage());
+        }
     }
 
     @KafkaListener(topics = TOPIC, groupId = "kafka-standby-group", containerFactory = "kafkaListenerContainerFactory")
