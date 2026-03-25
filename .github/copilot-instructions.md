@@ -65,6 +65,8 @@
 ## Key conventions
 
 - Treat `kafka-exercises/` and `kafka-exercises-solutions/` as paired trees. Before changing an exercise, check whether the corresponding solution already demonstrates the intended end state or test style.
+- Before changing exercise or solution content, read `.github/EXERCISE_VALIDATION.md`. It documents the current validation matrix, the markdown-lesson verification flow, and the accepted exercise/solution gaps versus accidental drift.
+- When validating exercise changes, compare paired exercise/solution trees and preserve only the intended learning gaps. Non-lesson differences like stale dependency versions, broken README commands, or missing solution-side documentation should be treated as drift and fixed.
 
 - Do not assume every subproject inherits from the root parent. Parent-based demos and shared services use `io.spoud.training:training-parent`, but some exercises and Spring Boot demos define their own standalone POMs and versions.
 

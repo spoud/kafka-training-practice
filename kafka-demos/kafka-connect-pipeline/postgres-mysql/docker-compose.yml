@@ -45,10 +45,14 @@ services:
   connect:
     image: quay.io/debezium/connect:3.4.2.Final
     ports:
-     - 8083:8083
+      - 8083:8083
+    depends_on:
+      - broker
+      - postgres
+      - mysql
     links:
-     - postgres
-     - mysql
+      - postgres
+      - mysql
     environment:
      - BOOTSTRAP_SERVERS=broker:29092
      - GROUP_ID=1

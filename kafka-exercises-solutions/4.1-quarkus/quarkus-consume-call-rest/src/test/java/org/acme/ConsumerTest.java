@@ -9,7 +9,7 @@ import io.smallrye.reactive.messaging.kafka.companion.KafkaCompanion;
 import io.smallrye.reactive.messaging.kafka.companion.ProducerTask;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -29,7 +29,7 @@ public class ConsumerTest {
     @RestClient
     SampleRestClient sampleRestClient;
 
-    @Before
+    @BeforeEach
     public void setup() {
         when(sampleRestClient.getEchoPingMessage(any(PingMessage.class))).thenReturn(new PingMessage());
     }
