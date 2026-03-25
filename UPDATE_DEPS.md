@@ -2,6 +2,9 @@
 
 Since there are lots of projects in here, we get lots of dependabot PRs. This is a quick way to update all of them.
 
+Dependabot PRs target the `updates` branch. When the `Build aggregator` workflow succeeds, the repository
+auto-approves and auto-merges those PRs into `updates`.
+
 ```bash
 # Script should fail fast
 set -e
