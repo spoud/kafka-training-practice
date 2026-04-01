@@ -23,7 +23,7 @@ public class KafkaPingResourceFailureTest {
     @Test
     public void testEndpoint() {
         given()
-                .when().get("/ping-kafka-json")
+                .when().get("/ping-kafka-avro")
                 .then()
                 .statusCode(500)
                 .body(containsString("io.smallrye.mutiny.TimeoutException"));

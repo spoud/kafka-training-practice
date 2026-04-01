@@ -2,7 +2,7 @@
 services:
 
   broker:
-    image: confluentinc/cp-kafka:8.1.0
+    image: confluentinc/cp-kafka:8.2.0
     hostname: broker
     container_name: broker
     ports:
@@ -29,7 +29,7 @@ services:
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:8.1.0
+    image: confluentinc/cp-schema-registry:8.2.0
     hostname: schema-registry
     container_name: schema-registry
     depends_on:
@@ -66,7 +66,7 @@ services:
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
   control-center:
-    image: confluentinc/cp-enterprise-control-center-next-gen:2.3.0
+    image: confluentinc/cp-enterprise-control-center-next-gen:2.4.0
     hostname: control-center
     container_name: control-center
     depends_on:
@@ -90,7 +90,7 @@ services:
       PORT: 9021
 
   ksqldb-server:
-    image: confluentinc/cp-ksqldb-server:8.1.0
+    image: confluentinc/cp-ksqldb-server:8.2.0
     hostname: ksqldb-server
     container_name: ksqldb-server
     depends_on:
@@ -113,7 +113,7 @@ services:
       KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: 'true'
 
   ksqldb-cli:
-    image: confluentinc/cp-ksqldb-cli:8.0.2
+    image: confluentinc/cp-ksqldb-cli:7.9.6
     container_name: ksqldb-cli
     depends_on:
       - broker
@@ -123,7 +123,7 @@ services:
     tty: true
 
   ksql-datagen:
-    image: confluentinc/ksqldb-examples:8.0.2
+    image: confluentinc/ksqldb-examples:7.9.6
     hostname: ksql-datagen
     container_name: ksql-datagen
     depends_on:
@@ -145,7 +145,7 @@ services:
       STREAMS_SCHEMA_REGISTRY_PORT: 8081
 
   rest-proxy:
-    image: confluentinc/cp-kafka-rest:8.1.0
+    image: confluentinc/cp-kafka-rest:8.2.0
     depends_on:
       - broker
       - schema-registry

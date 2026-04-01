@@ -8,6 +8,6 @@ import java.util.Map;
 public class KafkaPingResourceFailureTestProfile implements QuarkusTestProfile {
     @Override
     public Map<String, String> getConfigOverrides() {
-        return Collections.singletonMap("mp.messaging.outgoing.kaf-demo-ping-json.bootstrap.servers", "127.0.0.1:80"); // intentionally wrong port
+        return Collections.singletonMap("mp.messaging.outgoing.kaf-demo-ping-avro.bootstrap.servers", "127.0.0.1:80"); // intentionally wrong port
     }
 }
