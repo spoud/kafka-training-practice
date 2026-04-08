@@ -26,7 +26,7 @@ services:
       # See https://docs.confluent.io/kafka/operations-tools/kafka-tools.html#kafka-storage-sh
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
   postgres:
-    image: quay.io/debezium/example-postgres:3.4.2.Final
+    image: quay.io/debezium/example-postgres:3.4.3.Final
     ports:
      - 5432:5432
     environment:
