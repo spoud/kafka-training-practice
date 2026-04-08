@@ -1,6 +1,7 @@
 ---
 services:
   kcat:
+    profiles: ["minimal", "full"]
     image: edenhill/kcat:1.7.1
     hostname: kcat
     container_name: kcat

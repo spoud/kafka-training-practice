@@ -14,7 +14,7 @@
 There is a `kcat` container waiting for you to be used.
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose-kcat.yml exec kcat sh
+docker compose --profile minimal -f docker-compose.yml -f docker-compose-kcat.yml exec kcat sh
 ```
 
 Within the container run `kcat` commands like the following to list the metadata:

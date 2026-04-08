@@ -1,6 +1,7 @@
 ---
 services:
   elasticsearch:
+    profiles: ["full"]
     image: docker.elastic.co/elasticsearch/elasticsearch:9.3.2
     container_name: elasticsearch
     environment:
@@ -23,6 +24,7 @@ services:
       - "9300:9300"
 
   kibana:
+    profiles: ["full"]
     container_name: kibana
     image: docker.elastic.co/kibana/kibana:9.3.2
     environment:
