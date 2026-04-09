@@ -19,11 +19,10 @@ fi
 
 # Function to print usage and available profiles
 print_usage() {
-  echo "Usage: ./start.sh [PROFILE] [--ui UI]"
+  echo "Usage: ./start.sh [--full] [--ui UI]"
   echo ""
-  echo "Available profiles:"
-  echo "  minimal    (default) broker, schema-registry, kcat"
-  echo "  full       everything (connect, ksqldb, elk, flink, all UIs, etc.)"
+  echo "Flags:"
+  echo "  --full     Also start extra services (connect, ksqldb, elk, flink, all UIs, etc.)"
   echo ""
   echo "Available UI options (--ui):"
   echo "  none       (default) no UI"
@@ -33,7 +32,7 @@ print_usage() {
 }
 
 # Parse arguments
-PROFILE="minimal"
+FULL=false
 UI="none"
 
 while [[ $# -gt 0 ]]; do
@@ -41,6 +40,10 @@ while [[ $# -gt 0 ]]; do
     -h|--help)
       print_usage
       exit 0
+      ;;
+    --full)
+      FULL=true
+      shift
       ;;
     --ui)
       if [[ -z "$2" || "$2" == --* ]]; then
@@ -52,26 +55,14 @@ while [[ $# -gt 0 ]]; do
       UI="$2"
       shift 2
       ;;
-    -*)
+    *)
       print_error "Unknown option: $1"
       echo ""
       print_usage
       exit 1
       ;;
-    *)
-      PROFILE="$1"
-      shift
-      ;;
   esac
 done
-
-# Validate profile
-if [[ "$PROFILE" != "minimal" && "$PROFILE" != "full" ]]; then
-  print_error "Invalid profile: $PROFILE"
-  echo ""
-  print_usage
-  exit 1
-fi
 
 # Validate UI
 if [[ "$UI" != "none" && "$UI" != "akhq" && "$UI" != "redpanda" && "$UI" != "confluent" ]]; then
@@ -81,10 +72,13 @@ if [[ "$UI" != "none" && "$UI" != "akhq" && "$UI" != "redpanda" && "$UI" != "con
   exit 1
 fi
 
-echo "Starting Docker Compose services with profile: $PROFILE, UI: $UI"
+echo "Starting Docker Compose services (full: $FULL, UI: $UI)"
 
 # Build profile flags
-PROFILE_FLAGS=(--profile "$PROFILE")
+PROFILE_FLAGS=()
+if [[ "$FULL" == true ]]; then
+  PROFILE_FLAGS+=(--profile full)
+fi
 if [[ "$UI" != "none" ]]; then
   PROFILE_FLAGS+=(--profile "$UI")
 fi

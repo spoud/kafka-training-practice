@@ -7,7 +7,7 @@ In this exercise you will work with
 
 ## Setup
 
-Make sure the kafka services are running with `docker compose --profile minimal up -d`
+Make sure the kafka services are running with `docker compose up -d`
 
 
 ## Step 1 - Implementing java-avro-producer

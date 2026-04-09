@@ -29,7 +29,6 @@ services:
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
 
   schema-registry:
-    profiles: ["minimal", "full"]
     image: confluentinc/cp-schema-registry:8.2.0
     hostname: schema-registry
     container_name: schema-registry

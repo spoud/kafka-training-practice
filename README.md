@@ -24,7 +24,7 @@ In this folder you find some resources to use in the exercises and demos in a ce
 
 ```bash
 # This will start the Kafka cluster with a schema registry
-docker compose --profile minimal up -d
+docker compose up -d
 ```
 
 ## Ports used
