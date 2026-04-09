@@ -23,6 +23,7 @@ In this folder you find some resources to use in the exercises and demos in a ce
 ### Startup Kafka cluster
 
 ```bash
+# This will start the Kafka cluster with a schema registry
 docker compose up -d
 ```
 

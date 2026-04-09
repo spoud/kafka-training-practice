@@ -7,12 +7,6 @@ print_error() {
   printf "\033[1;31mERROR: %s\033[0m\n" "$1" >&2 # Red
 }
 
-# Check if wget is installed
-if ! command -v wget &>/dev/null; then
-  print_error "wget command not found. Please install wget to proceed."
-  exit 1
-fi
-
 # Check if docker-compose or docker compose is installed
 if command -v docker-compose &>/dev/null; then
   DOCKER_COMPOSE_COMMAND="docker-compose"
@@ -23,9 +17,70 @@ else
   exit 1
 fi
 
-# Download docker-compose.yml if it does not exist
-if [ ! -f "docker-compose.yml" ]; then
-  wget https://raw.githubusercontent.com/confluentinc/cp-all-in-one/8.2.0-post/cp-all-in-one-kraft/docker-compose.yml
+# Function to print usage and available profiles
+print_usage() {
+  echo "Usage: ./start.sh [--full] [--ui UI]"
+  echo ""
+  echo "Flags:"
+  echo "  --full     Also start extra services (connect, ksqldb, elk, flink, all UIs, etc.)"
+  echo ""
+  echo "Available UI options (--ui):"
+  echo "  none       (default) no UI"
+  echo "  akhq       AKHQ                      -> http://localhost:8089"
+  echo "  redpanda   Redpanda Console          -> http://localhost:8084"
+  echo "  confluent  Confluent Control Center  -> http://localhost:9021"
+}
+
+# Parse arguments
+FULL=false
+UI="none"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      print_usage
+      exit 0
+      ;;
+    --full)
+      FULL=true
+      shift
+      ;;
+    --ui)
+      if [[ -z "$2" || "$2" == --* ]]; then
+        print_error "--ui requires a value"
+        echo ""
+        print_usage
+        exit 1
+      fi
+      UI="$2"
+      shift 2
+      ;;
+    *)
+      print_error "Unknown option: $1"
+      echo ""
+      print_usage
+      exit 1
+      ;;
+  esac
+done
+
+# Validate UI
+if [[ "$UI" != "none" && "$UI" != "akhq" && "$UI" != "redpanda" && "$UI" != "confluent" ]]; then
+  print_error "Invalid UI: $UI"
+  echo ""
+  print_usage
+  exit 1
+fi
+
+echo "Starting Docker Compose services (full: $FULL, UI: $UI)"
+
+# Build profile flags
+PROFILE_FLAGS=()
+if [[ "$FULL" == true ]]; then
+  PROFILE_FLAGS+=(--profile full)
+fi
+if [[ "$UI" != "none" ]]; then
+  PROFILE_FLAGS+=(--profile "$UI")
 fi
 
 # Run Docker Compose
@@ -36,4 +91,5 @@ $DOCKER_COMPOSE_COMMAND \
   -f docker-compose-elk.yml \
   -f docker-compose-flink.yml \
   -f docker-compose-kcat.yml \
+  "${PROFILE_FLAGS[@]}" \
   up -d

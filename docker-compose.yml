@@ -42,6 +42,7 @@ services:
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
 
   connect:
+    profiles: ["full"]
     image: cnfldemos/cp-server-connect-datagen:0.6.7-8.0.0
     hostname: connect
     container_name: connect
@@ -66,6 +67,7 @@ services:
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
   control-center:
+    profiles: ["confluent", "full"]
     image: confluentinc/cp-enterprise-control-center-next-gen:2.4.0
     hostname: control-center
     container_name: control-center
@@ -90,6 +92,7 @@ services:
       PORT: 9021
 
   ksqldb-server:
+    profiles: ["full"]
     image: confluentinc/cp-ksqldb-server:8.2.0
     hostname: ksqldb-server
     container_name: ksqldb-server
@@ -113,6 +116,7 @@ services:
       KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: 'true'
 
   ksqldb-cli:
+    profiles: ["full"]
     image: confluentinc/cp-ksqldb-cli:7.9.6
     container_name: ksqldb-cli
     depends_on:
@@ -123,6 +127,7 @@ services:
     tty: true
 
   ksql-datagen:
+    profiles: ["full"]
     image: confluentinc/ksqldb-examples:7.9.6
     hostname: ksql-datagen
     container_name: ksql-datagen
@@ -145,6 +150,7 @@ services:
       STREAMS_SCHEMA_REGISTRY_PORT: 8081
 
   rest-proxy:
+    profiles: ["full"]
     image: confluentinc/cp-kafka-rest:8.2.0
     depends_on:
       - broker
