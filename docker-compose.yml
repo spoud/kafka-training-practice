@@ -113,7 +113,7 @@ services:
       KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: 'true'
 
   ksqldb-cli:
-    image: confluentinc/cp-ksqldb-cli:7.9.6
+    image: confluentinc/cp-ksqldb-cli:8.0.2
     container_name: ksqldb-cli
     depends_on:
       - broker
