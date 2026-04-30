@@ -1,4 +1,4 @@
-FROM flink:2.1.1-java17
+FROM flink:2.2.0-java17
 
 ENV FLINK_VERSION=2.1.1
 ENV KAFKA_VERSION=4.0.1
