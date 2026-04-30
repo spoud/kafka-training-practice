@@ -43,7 +43,7 @@ services:
     volumes:
      - ./:/setup
   connect:
-    image: quay.io/debezium/connect:3.4.2.Final
+    image: quay.io/debezium/connect:3.5.0.Final
     ports:
       - 8083:8083
     depends_on:
