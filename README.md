@@ -47,3 +47,9 @@ docker compose up -d
 | Kibana                   | [5601](http://localhost:5601) |
 | Elasticsearch            | [9200](http://localhost:9200) |
 | Flink Dashboard          | [8090](http://localhost:8090) |
+
+## Dependabot auto-merge
+
+Dependabot PRs targeting the `updates` branch are auto-merged by GitHub Actions after the `Build aggregator` pull request run succeeds.
+
+If a Dependabot PR changes files under `.github/workflows/`, the workflow needs a repository secret named `DEPENDABOT_AUTOMERGE_TOKEN` that contains a token with permission to update workflow files. Without that secret, non-workflow Dependabot PRs can still auto-merge, but workflow-changing PRs stay manual.
