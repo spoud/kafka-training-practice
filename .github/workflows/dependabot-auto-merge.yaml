@@ -26,7 +26,8 @@ jobs:
       github.event.pull_request.user.login == 'dependabot[bot]' &&
       !github.event.pull_request.draft
     env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.DEPENDABOT_AUTOMERGE_TOKEN != '' && secrets.DEPENDABOT_AUTOMERGE_TOKEN || secrets.GITHUB_TOKEN }}
+      HAS_AUTOMERGE_TOKEN: ${{ secrets.DEPENDABOT_AUTOMERGE_TOKEN != '' }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
       PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
       REPOSITORY: ${{ github.repository }}
@@ -129,6 +130,18 @@ jobs:
               exit 1
               ;;
           esac
+
+      - name: Check token requirements for workflow file changes
+        run: |
+          set -euo pipefail
+
+          files_json="$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER/files?per_page=100")"
+          if jq -e '.[] | select(.filename | startswith(".github/workflows/"))' <<<"$files_json" >/dev/null; then
+            if [ "$HAS_AUTOMERGE_TOKEN" != "true" ]; then
+              echo "This PR changes GitHub workflow files and needs secrets.DEPENDABOT_AUTOMERGE_TOKEN with workflow scope."
+              exit 1
+            fi
+          fi
 
       - name: Approve PR if not already approved
         run: |
