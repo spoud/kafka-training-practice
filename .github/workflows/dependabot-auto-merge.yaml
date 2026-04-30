@@ -97,17 +97,35 @@ jobs:
         run: |
           set -euo pipefail
 
-          merge_state="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json mergeStateStatus -q .mergeStateStatus)"
+          timeout_seconds=$((10 * 60))
+          poll_interval=15
+          deadline=$(( $(date +%s) + timeout_seconds ))
+          merge_state=""
+
+          while [ "$(date +%s)" -lt "$deadline" ]; do
+            merge_state="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json mergeStateStatus -q .mergeStateStatus)"
+            case "$merge_state" in
+              CLEAN|HAS_HOOKS|UNSTABLE)
+                echo "PR is ready to merge (mergeStateStatus=$merge_state)."
+                break
+                ;;
+              BEHIND)
+                gh pr comment "$PR_NUMBER" --repo "$REPOSITORY" --body "@dependabot rebase"
+                echo "PR is behind updates; requested a Dependabot rebase."
+                exit 1
+                ;;
+              *)
+                echo "PR mergeability is still settling (mergeStateStatus=$merge_state)."
+                sleep "$poll_interval"
+                ;;
+            esac
+          done
+
           case "$merge_state" in
             CLEAN|HAS_HOOKS|UNSTABLE)
               ;;
-            BEHIND)
-              gh pr comment "$PR_NUMBER" --repo "$REPOSITORY" --body "@dependabot rebase"
-              echo "PR is behind updates; requested a Dependabot rebase."
-              exit 1
-              ;;
             *)
-              echo "PR is not ready to merge (mergeStateStatus=$merge_state)."
+              echo "Timed out waiting for mergeable state (last mergeStateStatus=$merge_state)."
               exit 1
               ;;
           esac
