@@ -14,7 +14,6 @@ permissions:
   actions: read
   contents: write
   pull-requests: write
-  workflows: write
 
 concurrency:
   group: dependabot-auto-merge-${{ github.event.pull_request.number }}
