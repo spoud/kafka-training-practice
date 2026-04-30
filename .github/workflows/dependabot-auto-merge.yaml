@@ -97,12 +97,12 @@ jobs:
         run: |
           set -euo pipefail
 
-          merge_state="$(gh pr view "$PR_NUMBER" --json mergeStateStatus -q .mergeStateStatus)"
+          merge_state="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json mergeStateStatus -q .mergeStateStatus)"
           case "$merge_state" in
             CLEAN|HAS_HOOKS|UNSTABLE)
               ;;
             BEHIND)
-              gh pr comment "$PR_NUMBER" --body "@dependabot rebase"
+              gh pr comment "$PR_NUMBER" --repo "$REPOSITORY" --body "@dependabot rebase"
               echo "PR is behind updates; requested a Dependabot rebase."
               exit 1
               ;;
@@ -114,11 +114,11 @@ jobs:
 
       - name: Approve PR if not already approved
         run: |
-          if [ "$(gh pr view "$PR_NUMBER" --json reviewDecision -q .reviewDecision)" != "APPROVED" ]; then
-            gh pr review --approve "$PR_NUMBER"
+          if [ "$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json reviewDecision -q .reviewDecision)" != "APPROVED" ]; then
+            gh pr review --repo "$REPOSITORY" --approve "$PR_NUMBER"
           else
             echo "PR already approved."
           fi
 
       - name: Merge successful Dependabot PR
-        run: gh pr merge --squash "$PR_NUMBER"
+        run: gh pr merge --repo "$REPOSITORY" --squash "$PR_NUMBER"
