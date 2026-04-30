@@ -33,7 +33,7 @@ services:
      - POSTGRES_USER=postgres
      - POSTGRES_PASSWORD=postgres
   mysql:
-    image: quay.io/debezium/example-mysql:3.4.2.Final
+    image: quay.io/debezium/example-mysql:3.5.0.Final
     ports:
      - 3306:3306
     environment:
