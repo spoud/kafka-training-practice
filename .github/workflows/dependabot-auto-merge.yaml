@@ -1,29 +1,118 @@
 name: Dependabot auto-merge
 
 on:
-  workflow_run:
-    workflows:
-      - Build aggregator
+  pull_request_target:
+    branches:
+      - updates
     types:
-      - completed
+      - opened
+      - ready_for_review
+      - reopened
+      - synchronize
 
 permissions:
+  actions: read
   contents: write
   pull-requests: write
   workflows: write
+
+concurrency:
+  group: dependabot-auto-merge-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 jobs:
   dependabot:
     runs-on: ubuntu-latest
     if: >
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.event == 'pull_request' &&
-      github.event.workflow_run.actor.login == 'dependabot[bot]' &&
-      github.event.workflow_run.pull_requests[0].base.ref == 'updates'
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      !github.event.pull_request.draft
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      REPOSITORY: ${{ github.repository }}
     steps:
+      - name: Wait for successful Build aggregator PR run
+        run: |
+          set -euo pipefail
+
+          timeout_seconds=$((30 * 60))
+          poll_interval=30
+          deadline=$(( $(date +%s) + timeout_seconds ))
+          run_id=""
+
+          while [ "$(date +%s)" -lt "$deadline" ]; do
+            run_json="$(
+              gh api "repos/$REPOSITORY/actions/workflows/build.yaml/runs?event=pull_request&per_page=100"
+            )"
+
+            run_id="$(jq -r --arg sha "$PR_HEAD_SHA" --argjson pr_number "$PR_NUMBER" '
+              .workflow_runs
+              | map(select(
+                  .head_sha == $sha and
+                  any(.pull_requests[]?; .number == $pr_number)
+                ))
+              | sort_by(.created_at)
+              | reverse
+              | .[0].id // empty
+            ' <<<"$run_json")"
+
+            if [ -z "$run_id" ]; then
+              echo "No Build aggregator pull_request run found yet for $PR_HEAD_SHA."
+              sleep "$poll_interval"
+              continue
+            fi
+
+            run_status="$(jq -r --argjson run_id "$run_id" '
+              .workflow_runs[]
+              | select(.id == $run_id)
+              | .status
+            ' <<<"$run_json")"
+            run_conclusion="$(jq -r --argjson run_id "$run_id" '
+              .workflow_runs[]
+              | select(.id == $run_id)
+              | .conclusion // empty
+            ' <<<"$run_json")"
+
+            echo "Build aggregator run $run_id status=$run_status conclusion=${run_conclusion:-pending}"
+
+            if [ "$run_status" != "completed" ]; then
+              sleep "$poll_interval"
+              continue
+            fi
+
+            if [ "$run_conclusion" != "success" ]; then
+              echo "Build aggregator did not succeed for $PR_HEAD_SHA."
+              exit 1
+            fi
+
+            break
+          done
+
+          if [ -z "$run_id" ]; then
+            echo "Timed out waiting for Build aggregator to start for $PR_HEAD_SHA."
+            exit 1
+          fi
+
+      - name: Request rebase if base branch moved
+        run: |
+          set -euo pipefail
+
+          merge_state="$(gh pr view "$PR_NUMBER" --json mergeStateStatus -q .mergeStateStatus)"
+          case "$merge_state" in
+            CLEAN|HAS_HOOKS|UNSTABLE)
+              ;;
+            BEHIND)
+              gh pr comment "$PR_NUMBER" --body "@dependabot rebase"
+              echo "PR is behind updates; requested a Dependabot rebase."
+              exit 1
+              ;;
+            *)
+              echo "PR is not ready to merge (mergeStateStatus=$merge_state)."
+              exit 1
+              ;;
+          esac
+
       - name: Approve PR if not already approved
         run: |
           if [ "$(gh pr view "$PR_NUMBER" --json reviewDecision -q .reviewDecision)" != "APPROVED" ]; then
