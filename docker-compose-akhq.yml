@@ -2,6 +2,7 @@
 services:
   akhq:
     profiles: ["akhq", "full"]
+    container_name: akhq
     image: tchiotludo/akhq:0.27.0
     security_opt:
       - seccomp:unconfined
