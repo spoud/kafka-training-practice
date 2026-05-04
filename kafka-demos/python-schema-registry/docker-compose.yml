@@ -1,0 +1,97 @@
+---
+services:
+  broker:
+    image: apache/kafka:3.8.0
+    hostname: broker
+    user: "0:0"
+    volumes:
+      - kafka-data:/tmp/kraft-combined-logs
+    ports:
+      - 9092:9092
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@broker:29093
+      KAFKA_LISTENERS: PLAINTEXT://broker:29092,CONTROLLER://broker:29093,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+      # flink parallelism should not be higher than consumed topic partition count
+      # we want to test locally with flink parallelism >= 2, so let's bump default partition count
+      KAFKA_NUM_PARTITIONS: 3
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+    healthcheck:
+      test: ["CMD","/opt/kafka/bin/kafka-broker-api-versions.sh", "--bootstrap-server", "localhost:9092"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+  
+  kafkasetup:
+    depends_on:
+      - broker
+    image: apache/kafka:3.8.0
+    restart: on-failure
+    # Put your initialization (e.g. topic creation) in this script. You have access to all Kafka cli utilities.
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        # Topic creation example:
+        # /opt/kafka/bin/kafka-topics.sh --bootstrap-server broker:29092 --create --topic my-topic --partitions 1 --replication-factor 1 --config retention.ms=-1
+        echo "Kafka topics created successfully."
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:8.2.0
+    hostname: schema-registry
+    container_name: schema-registry
+    depends_on:
+      - broker
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+
+    # confluent compatibility api is accessible at /apis/ccompat/v8
+  apicurio-registry:
+    depends_on:
+      - broker
+    image: apicurio/apicurio-registry:3.2.3
+    environment:
+      QUARKUS_PROFILE: "prod"
+      APICURIO_KAFKA_COMMON_BOOTSTRAP_SERVERS: "broker:29092"
+      APICURIO_CCOMPAT_LEGACY_ID_MODE_ENABLED: "true"
+      APICURIO_STORAGE_KIND: "kafkasql"
+    ports:
+      - 9081:8080
+  
+  kafbat-ui:
+    container_name: kafbat-ui
+    image: ghcr.io/kafbat/kafka-ui:latest
+    ports:
+      - 8082:8080
+    depends_on:
+      - broker
+      - schema-registry
+      - apicurio-registry
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local-confluent
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: broker:29092
+      KAFKA_CLUSTERS_0_SCHEMAREGISTRY: http://schema-registry:8081
+      KAFKA_CLUSTERS_1_NAME: local-apicurio
+      KAFKA_CLUSTERS_1_BOOTSTRAPSERVERS: broker:29092
+      KAFKA_CLUSTERS_1_SCHEMAREGISTRY: http://apicurio-registry:8080/apis/ccompat/v8
+  
+volumes:
+  kafka-data:
+
