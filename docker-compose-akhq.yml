@@ -1,7 +1,7 @@
 ---
 services:
   akhq:
-    image: tchiotludo/akhq:0.27.0
+    image: tchiotludo/akhq:0.27.1
     security_opt:
       - seccomp:unconfined
     environment:
