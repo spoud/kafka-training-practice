@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  dependabot:
+  prepare:
     runs-on: ubuntu-latest
     if: >
       github.event.pull_request.user.login == 'dependabot[bot]' &&
@@ -94,6 +94,40 @@ jobs:
             exit 1
           fi
 
+      - name: Check token requirements for workflow file changes
+        run: |
+          set -euo pipefail
+
+          files_json="$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER/files?per_page=100")"
+          if jq -e '.[] | select(.filename | startswith(".github/workflows/"))' <<<"$files_json" >/dev/null; then
+            if [ "$HAS_AUTOMERGE_TOKEN" != "true" ]; then
+              echo "This PR changes GitHub workflow files and needs secrets.DEPENDABOT_AUTOMERGE_TOKEN with workflow scope."
+              exit 1
+            fi
+          fi
+
+      - name: Approve PR if not already approved
+        run: |
+          if [ "$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json reviewDecision -q .reviewDecision)" != "APPROVED" ]; then
+            gh pr review --repo "$REPOSITORY" --approve "$PR_NUMBER"
+          else
+            echo "PR already approved."
+          fi
+
+  merge:
+    needs: prepare
+    if: needs.prepare.result == 'success'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: dependabot-auto-merge-${{ github.event.pull_request.base.ref }}
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ secrets.DEPENDABOT_AUTOMERGE_TOKEN != '' && secrets.DEPENDABOT_AUTOMERGE_TOKEN || secrets.GITHUB_TOKEN }}
+      HAS_AUTOMERGE_TOKEN: ${{ secrets.DEPENDABOT_AUTOMERGE_TOKEN != '' }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      REPOSITORY: ${{ github.repository }}
+    steps:
       - name: Request rebase if base branch moved
         run: |
           set -euo pipefail
@@ -130,26 +164,6 @@ jobs:
               exit 1
               ;;
           esac
-
-      - name: Check token requirements for workflow file changes
-        run: |
-          set -euo pipefail
-
-          files_json="$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER/files?per_page=100")"
-          if jq -e '.[] | select(.filename | startswith(".github/workflows/"))' <<<"$files_json" >/dev/null; then
-            if [ "$HAS_AUTOMERGE_TOKEN" != "true" ]; then
-              echo "This PR changes GitHub workflow files and needs secrets.DEPENDABOT_AUTOMERGE_TOKEN with workflow scope."
-              exit 1
-            fi
-          fi
-
-      - name: Approve PR if not already approved
-        run: |
-          if [ "$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json reviewDecision -q .reviewDecision)" != "APPROVED" ]; then
-            gh pr review --repo "$REPOSITORY" --approve "$PR_NUMBER"
-          else
-            echo "PR already approved."
-          fi
 
       - name: Merge successful Dependabot PR
         run: gh pr merge --repo "$REPOSITORY" --squash "$PR_NUMBER"
