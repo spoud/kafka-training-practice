@@ -2,6 +2,9 @@ name: Build aggregator
 
 on:
   push:
+    branches:
+      - main
+      - updates
   pull_request:
 
 jobs:
