@@ -17,7 +17,7 @@ permissions:
 
 concurrency:
   group: dependabot-auto-merge-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   prepare:
@@ -129,6 +129,12 @@ jobs:
         run: |
           set -euo pipefail
 
+          current_head_sha="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json headRefOid -q .headRefOid)"
+          if [ "$current_head_sha" != "$PR_HEAD_SHA" ]; then
+            echo "PR head changed from $PR_HEAD_SHA to $current_head_sha; a newer workflow run will handle the merge."
+            exit 0
+          fi
+
           wait_for_mergeable_state() {
             local timeout_seconds=$((10 * 60))
             local poll_interval=15
@@ -166,7 +172,7 @@ jobs:
             echo "Merge attempt $attempt of $max_attempts."
 
             set +e
-            merge_output="$(gh pr merge --repo "$REPOSITORY" --squash "$PR_NUMBER" 2>&1)"
+            merge_output="$(gh pr merge --repo "$REPOSITORY" --squash --match-head-commit "$PR_HEAD_SHA" "$PR_NUMBER" 2>&1)"
             merge_status=$?
             set -e
 
