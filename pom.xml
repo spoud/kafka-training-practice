@@ -18,11 +18,11 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.36.1</quarkus.platform.version>
+        <quarkus.platform.version>3.37.2</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.5.6</surefire-plugin.version>
-        <confluent.version>8.2.1</confluent.version>
-        <kafka.version>4.3.0</kafka.version> <!-- this MUST BE a kafka OSS version (ex 4.x), and NOT a confluent version (ex 8.x) -->
+        <confluent.version>8.3.0</confluent.version>
+        <kafka.version>4.3.1</kafka.version> <!-- this MUST BE a kafka OSS version (ex 4.x), and NOT a confluent version (ex 8.x) -->
     </properties>
     <modules>
         <!-- demos -->
@@ -94,7 +94,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.5.34</version>
+            <version>1.5.38</version>
         </dependency>
 
         <dependency>

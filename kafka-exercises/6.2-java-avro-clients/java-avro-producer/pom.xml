@@ -16,8 +16,8 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <avro.version>1.12.1</avro.version>
-        <confluent.version>8.2.1</confluent.version>
-        <kafka.version>4.3.0</kafka.version>
+        <confluent.version>8.3.0</confluent.version>
+        <kafka.version>4.3.1</kafka.version>
     </properties>
 
     <dependencies>
@@ -51,7 +51,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.5.32</version>
+            <version>1.5.38</version>
         </dependency>
     </dependencies>
 
