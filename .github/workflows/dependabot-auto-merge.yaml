@@ -118,14 +118,8 @@ jobs:
             echo "PR already approved."
           fi
 
-  # Merging is decoupled from the pull_request_target trigger on purpose: the
-  # old design ran one `merge` job per PR event, serialized through a
-  # concurrency group shared by every PR targeting `updates`. GitHub only
-  # queues one pending job per group, so a burst of Dependabot PRs (a normal
-  # weekly occurrence here) silently cancelled all but one or two of them,
-  # and since nothing re-triggers a cancelled run, PRs stayed approved but
-  # unmerged forever. A scheduled sweep that merges everything eligible in a
-  # single sequential loop has no concurrency group to starve on.
+  # Runs on a schedule and merges every already-approved Dependabot PR
+  # sequentially, so ready PRs never compete for the same job slot.
   merge:
     if: github.event_name != 'pull_request_target'
     runs-on: ubuntu-latest
@@ -138,7 +132,7 @@ jobs:
           set -euo pipefail
 
           pr_numbers="$(
-            gh pr list --repo "$REPOSITORY" --base updates --state open \
+            gh pr list --repo "$REPOSITORY" --base updates --state open --limit 100 \
               --json number,author,isDraft,reviewDecision \
               --jq '[.[] | select(.author.is_bot == true and (.author.login | test("dependabot"; "i")) and .isDraft == false and .reviewDecision == "APPROVED")] | .[].number'
           )"
@@ -148,12 +142,8 @@ jobs:
             exit 0
           fi
 
-          # mergeStateStatus is computed asynchronously by GitHub; a query
-          # against a PR that hasn't been checked recently often returns
-          # UNKNOWN on the first call and only resolves a few seconds after
-          # that call kicks off the recomputation. Prime every PR first, then
-          # give GitHub a moment before reading real values, with a couple of
-          # retries per PR as a safety net.
+          # Prime mergeStateStatus (computed asynchronously by GitHub) for every
+          # PR up front, then poll each one until it resolves.
           for pr_number in $pr_numbers; do
             gh pr view "$pr_number" --repo "$REPOSITORY" --json mergeStateStatus >/dev/null || true
           done
@@ -165,11 +155,26 @@ jobs:
             for attempt in 1 2 3; do
               merge_state="$(gh pr view "$pr_number" --repo "$REPOSITORY" --json mergeStateStatus -q .mergeStateStatus)"
               [ "$merge_state" != "UNKNOWN" ] && break
-              sleep 8
+              [ "$attempt" -lt 3 ] && sleep 8
             done
             case "$merge_state" in
               CLEAN|HAS_HOOKS|UNSTABLE)
-                if gh pr merge --repo "$REPOSITORY" --squash "$pr_number"; then
+                # A stale approval survives new commits (no branch protection
+                # on updates to dismiss it), so re-check the current head SHA's
+                # build result rather than trusting the earlier approval alone.
+                head_sha="$(gh pr view "$pr_number" --repo "$REPOSITORY" --json headRefOid -q .headRefOid)"
+                build_conclusion="$(
+                  gh api "repos/$REPOSITORY/actions/workflows/build.yaml/runs?event=pull_request&per_page=100" \
+                    --jq --arg sha "$head_sha" '
+                      [.workflow_runs[] | select(.head_sha == $sha)]
+                      | sort_by(.created_at)
+                      | reverse
+                      | .[0].conclusion // "pending"
+                    '
+                )"
+                if [ "$build_conclusion" != "success" ]; then
+                  echo "PR #$pr_number build not successful for $head_sha (conclusion=$build_conclusion); skipping."
+                elif gh pr merge --repo "$REPOSITORY" --squash "$pr_number"; then
                   echo "Merged PR #$pr_number."
                 else
                   echo "Merge failed for PR #$pr_number; will retry next sweep."
