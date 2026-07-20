@@ -148,9 +148,25 @@ jobs:
             exit 0
           fi
 
+          # mergeStateStatus is computed asynchronously by GitHub; a query
+          # against a PR that hasn't been checked recently often returns
+          # UNKNOWN on the first call and only resolves a few seconds after
+          # that call kicks off the recomputation. Prime every PR first, then
+          # give GitHub a moment before reading real values, with a couple of
+          # retries per PR as a safety net.
+          for pr_number in $pr_numbers; do
+            gh pr view "$pr_number" --repo "$REPOSITORY" --json mergeStateStatus >/dev/null || true
+          done
+          sleep 10
+
           for pr_number in $pr_numbers; do
             echo "::group::PR #$pr_number"
-            merge_state="$(gh pr view "$pr_number" --repo "$REPOSITORY" --json mergeStateStatus -q .mergeStateStatus)"
+            merge_state="UNKNOWN"
+            for attempt in 1 2 3; do
+              merge_state="$(gh pr view "$pr_number" --repo "$REPOSITORY" --json mergeStateStatus -q .mergeStateStatus)"
+              [ "$merge_state" != "UNKNOWN" ] && break
+              sleep 8
+            done
             case "$merge_state" in
               CLEAN|HAS_HOOKS|UNSTABLE)
                 if gh pr merge --repo "$REPOSITORY" --squash "$pr_number"; then
@@ -162,6 +178,9 @@ jobs:
               BEHIND)
                 gh pr comment "$pr_number" --repo "$REPOSITORY" --body "@dependabot rebase"
                 echo "PR #$pr_number is behind updates; requested a Dependabot rebase."
+                ;;
+              UNKNOWN)
+                echo "PR #$pr_number mergeability still unresolved after retries; will retry next sweep."
                 ;;
               *)
                 echo "PR #$pr_number not ready (mergeStateStatus=$merge_state); skipping."
