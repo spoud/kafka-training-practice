@@ -140,7 +140,7 @@ jobs:
           pr_numbers="$(
             gh pr list --repo "$REPOSITORY" --base updates --state open \
               --json number,author,isDraft,reviewDecision \
-              --jq '[.[] | select(.author.login == "dependabot[bot]" and .isDraft == false and .reviewDecision == "APPROVED")] | .[].number'
+              --jq '[.[] | select(.author.is_bot == true and (.author.login | test("dependabot"; "i")) and .isDraft == false and .reviewDecision == "APPROVED")] | .[].number'
           )"
 
           if [ -z "$pr_numbers" ]; then
