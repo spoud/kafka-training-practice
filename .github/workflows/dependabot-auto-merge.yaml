@@ -164,8 +164,8 @@ jobs:
                 # build result rather than trusting the earlier approval alone.
                 head_sha="$(gh pr view "$pr_number" --repo "$REPOSITORY" --json headRefOid -q .headRefOid)"
                 build_conclusion="$(
-                  gh api "repos/$REPOSITORY/actions/workflows/build.yaml/runs?event=pull_request&per_page=100" \
-                    --jq --arg sha "$head_sha" '
+                  gh api "repos/$REPOSITORY/actions/workflows/build.yaml/runs?event=pull_request&per_page=100" |
+                    jq -r --arg sha "$head_sha" '
                       [.workflow_runs[] | select(.head_sha == $sha)]
                       | sort_by(.created_at)
                       | reverse
