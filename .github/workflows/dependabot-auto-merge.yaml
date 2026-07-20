@@ -180,9 +180,12 @@ jobs:
                   echo "Merge failed for PR #$pr_number; will retry next sweep."
                 fi
                 ;;
-              BEHIND)
+              BEHIND|DIRTY)
+                # BEHIND: base moved past this PR. DIRTY: real conflict, often
+                # caused by an earlier PR in this same sweep landing first.
+                # Dependabot regenerates the diff against the new base either way.
                 gh pr comment "$pr_number" --repo "$REPOSITORY" --body "@dependabot rebase"
-                echo "PR #$pr_number is behind updates; requested a Dependabot rebase."
+                echo "PR #$pr_number is $merge_state against updates; requested a Dependabot rebase."
                 ;;
               UNKNOWN)
                 echo "PR #$pr_number mergeability still unresolved after retries; will retry next sweep."
