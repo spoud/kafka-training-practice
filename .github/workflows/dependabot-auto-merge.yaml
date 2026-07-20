@@ -9,6 +9,9 @@ on:
       - ready_for_review
       - reopened
       - synchronize
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch: {}
 
 permissions:
   actions: read
@@ -16,15 +19,16 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: dependabot-auto-merge-${{ github.event.pull_request.number }}
+  group: dependabot-auto-merge-${{ github.event.pull_request.number || 'sweep' }}
   cancel-in-progress: true
 
 jobs:
   prepare:
-    runs-on: ubuntu-latest
     if: >
+      github.event_name == 'pull_request_target' &&
       github.event.pull_request.user.login == 'dependabot[bot]' &&
       !github.event.pull_request.draft
+    runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ secrets.DEPENDABOT_AUTOMERGE_TOKEN != '' && secrets.DEPENDABOT_AUTOMERGE_TOKEN || secrets.GITHUB_TOKEN }}
       HAS_AUTOMERGE_TOKEN: ${{ secrets.DEPENDABOT_AUTOMERGE_TOKEN != '' }}
@@ -114,56 +118,54 @@ jobs:
             echo "PR already approved."
           fi
 
+  # Merging is decoupled from the pull_request_target trigger on purpose: the
+  # old design ran one `merge` job per PR event, serialized through a
+  # concurrency group shared by every PR targeting `updates`. GitHub only
+  # queues one pending job per group, so a burst of Dependabot PRs (a normal
+  # weekly occurrence here) silently cancelled all but one or two of them,
+  # and since nothing re-triggers a cancelled run, PRs stayed approved but
+  # unmerged forever. A scheduled sweep that merges everything eligible in a
+  # single sequential loop has no concurrency group to starve on.
   merge:
-    needs: prepare
-    if: needs.prepare.result == 'success'
+    if: github.event_name != 'pull_request_target'
     runs-on: ubuntu-latest
-    concurrency:
-      group: dependabot-auto-merge-${{ github.event.pull_request.base.ref }}
-      cancel-in-progress: false
     env:
       GH_TOKEN: ${{ secrets.DEPENDABOT_AUTOMERGE_TOKEN != '' && secrets.DEPENDABOT_AUTOMERGE_TOKEN || secrets.GITHUB_TOKEN }}
-      HAS_AUTOMERGE_TOKEN: ${{ secrets.DEPENDABOT_AUTOMERGE_TOKEN != '' }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
-      PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
       REPOSITORY: ${{ github.repository }}
     steps:
-      - name: Request rebase if base branch moved
+      - name: Merge every approved Dependabot PR targeting updates
         run: |
           set -euo pipefail
 
-          timeout_seconds=$((10 * 60))
-          poll_interval=15
-          deadline=$(( $(date +%s) + timeout_seconds ))
-          merge_state=""
+          pr_numbers="$(
+            gh pr list --repo "$REPOSITORY" --base updates --state open \
+              --json number,author,isDraft,reviewDecision \
+              --jq '[.[] | select(.author.login == "dependabot[bot]" and .isDraft == false and .reviewDecision == "APPROVED")] | .[].number'
+          )"
 
-          while [ "$(date +%s)" -lt "$deadline" ]; do
-            merge_state="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json mergeStateStatus -q .mergeStateStatus)"
+          if [ -z "$pr_numbers" ]; then
+            echo "No approved Dependabot PRs ready to merge."
+            exit 0
+          fi
+
+          for pr_number in $pr_numbers; do
+            echo "::group::PR #$pr_number"
+            merge_state="$(gh pr view "$pr_number" --repo "$REPOSITORY" --json mergeStateStatus -q .mergeStateStatus)"
             case "$merge_state" in
               CLEAN|HAS_HOOKS|UNSTABLE)
-                echo "PR is ready to merge (mergeStateStatus=$merge_state)."
-                break
+                if gh pr merge --repo "$REPOSITORY" --squash "$pr_number"; then
+                  echo "Merged PR #$pr_number."
+                else
+                  echo "Merge failed for PR #$pr_number; will retry next sweep."
+                fi
                 ;;
               BEHIND)
-                gh pr comment "$PR_NUMBER" --repo "$REPOSITORY" --body "@dependabot rebase"
-                echo "PR is behind updates; requested a Dependabot rebase."
-                exit 1
+                gh pr comment "$pr_number" --repo "$REPOSITORY" --body "@dependabot rebase"
+                echo "PR #$pr_number is behind updates; requested a Dependabot rebase."
                 ;;
               *)
-                echo "PR mergeability is still settling (mergeStateStatus=$merge_state)."
-                sleep "$poll_interval"
+                echo "PR #$pr_number not ready (mergeStateStatus=$merge_state); skipping."
                 ;;
             esac
+            echo "::endgroup::"
           done
-
-          case "$merge_state" in
-            CLEAN|HAS_HOOKS|UNSTABLE)
-              ;;
-            *)
-              echo "Timed out waiting for mergeable state (last mergeStateStatus=$merge_state)."
-              exit 1
-              ;;
-          esac
-
-      - name: Merge successful Dependabot PR
-        run: gh pr merge --repo "$REPOSITORY" --squash "$PR_NUMBER"
