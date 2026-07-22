@@ -93,3 +93,45 @@ $DOCKER_COMPOSE_COMMAND \
   -f docker-compose-kcat.yml \
   "${PROFILE_FLAGS[@]}" \
   up -d
+
+# Print active URLs
+is_running() {
+  docker ps --format '{{.Names}}' | grep -q "^${1}$"
+}
+
+print_urls() {
+  local GREEN="\033[1;32m"
+  local CYAN="\033[1;36m"
+  local RESET="\033[0m"
+
+  echo ""
+  printf "${GREEN}Environment started! Active services:${RESET}\n"
+  echo ""
+  is_running broker         && printf "  ${CYAN}%-36s${RESET} %s\n" "Kafka bootstrap:"         "localhost:9092"
+  is_running broker         && printf "  ${CYAN}%-36s${RESET} %s\n" "Kafka bootstrap from containers:" "broker:29092"
+  is_running schema-registry && printf "  ${CYAN}%-36s${RESET} %s\n" "Schema Registry:"         "http://localhost:8081"
+  is_running akhq           && printf "  ${CYAN}%-36s${RESET} %s\n" "AKHQ:"                    "http://localhost:8089"
+  is_running console        && printf "  ${CYAN}%-36s${RESET} %s\n" "Redpanda Console:"        "http://localhost:8084"
+  is_running control-center && printf "  ${CYAN}%-36s${RESET} %s\n" "Confluent Control Center:" "http://localhost:9021"
+  is_running rest-proxy     && printf "  ${CYAN}%-36s${RESET} %s\n" "Kafka REST Proxy:"        "http://localhost:8082"
+  is_running connect        && printf "  ${CYAN}%-36s${RESET} %s\n" "Kafka Connect:"           "http://localhost:8083"
+  is_running ksqldb-server  && printf "  ${CYAN}%-36s${RESET} %s\n" "KsqlDB Server:"           "http://localhost:8088"
+  is_running elasticsearch  && printf "  ${CYAN}%-36s${RESET} %s\n" "Elasticsearch:"           "http://localhost:9200"
+  is_running kibana         && printf "  ${CYAN}%-36s${RESET} %s\n" "Kibana:"                  "http://localhost:5601"
+  is_running jobmanager     && printf "  ${CYAN}%-36s${RESET} %s\n" "Flink Dashboard:"         "http://localhost:8090"
+  echo ""
+  local YELLOW="\033[1;33m"
+  printf "${YELLOW}Useful commands:${RESET}\n"
+  echo ""
+  printf "  # List topics via the Kafka broker\n"
+  printf "  docker exec -it broker kafka-topics --bootstrap-server localhost:9092 --list\n"
+  echo ""
+  printf "  # List topics via kcat\n"
+  printf "  docker exec -it kcat kcat -b broker:29092 -L"
+  echo ""
+  printf "  # Or enter the kcat container interactively\n"
+  printf "  docker exec -it kcat /bin/sh\n"
+  echo ""
+}
+
+print_urls

@@ -2,6 +2,7 @@
 services:
   console:
     profiles: ["redpanda", "full"]
+    container_name: console
     image: docker.redpanda.com/redpandadata/console:v3.6.0
     restart: always
     entrypoint: /bin/sh

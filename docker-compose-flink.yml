@@ -1,6 +1,7 @@
 services:
   jobmanager:
     profiles: ["full"]
+    container_name: jobmanager
     build: resources/docker/flink/
     ports:
       - "8090:8081"
@@ -13,6 +14,7 @@ services:
 
   taskmanager:
     profiles: ["full"]
+    container_name: taskmanager
     build: resources/docker/flink/
     depends_on:
       - jobmanager
@@ -26,6 +28,7 @@ services:
         taskmanager.memory.process.size: 1024m
   sql-client:
     profiles: ["full"]
+    container_name: sql-client
     build: resources/docker/flink/
     command: bash -c "tail -f /dev/null"
     stop_grace_period: 0s
