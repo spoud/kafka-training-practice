@@ -18,7 +18,7 @@
 
   <properties>
     <main.basedir>${project.parent.basedir}</main.basedir>
-    <avro.version>1.12.1</avro.version>
+    <avro.version>1.12.2</avro.version>
     <confluent.version>8.3.1</confluent.version>
   </properties>
 
