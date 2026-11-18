@@ -97,7 +97,7 @@ Use this minimal temporary compose file:
 ```yaml
 services:
   broker:
-    image: confluentinc/cp-kafka:8.2.0
+    image: confluentinc/cp-kafka:8.4.1
     hostname: broker
     ports:
       - "19092:9092"
@@ -120,7 +120,7 @@ services:
       KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
   schema-registry:
-    image: confluentinc/cp-schema-registry:8.2.0
+    image: confluentinc/cp-schema-registry:8.4.1
     hostname: schema-registry
     depends_on:
       - broker
@@ -197,6 +197,25 @@ diff -qr kafka-exercises/6.2-java-avro-clients kafka-exercises-solutions/6.2-jav
 ```
 
 Then inspect the meaningful diffs with `git diff --no-index`.
+
+## Verification snapshot (2026-11-18)
+
+Run on Maven 3.10.0 / JDK 21 against the full `./start.sh` stack (Confluent 8.4.1, AKHQ 0.29.0, Redpanda Console v3.14.0, Elastic 9.5.6, Flink 2.3.0).
+
+- all 25 Maven projects built; the four incomplete exercises failed only for their intended reasons (missing `PingMessage`, empty `ok pong-kafka json` body, missing AVRO plugin, missing `value.deserializer`)
+- 2.1 CLI and 6.1 Schema Registry lessons passed against the root stack
+- ran the 4.1 solutions (producer, consumer, crappy echo service) and the 6.2 solutions (Java producer, Quarkus consumer) as jars against the stack
+- ran the `RecordNameStrategy` producer/consumer and `java-read-avro-message-from-file`
+- Debezium `postgres-mysql` demo: both connectors `RUNNING`, update of customer `1003` replicated
+- not run: `kafka-standby` with Unleash, Flink SQL walkthrough, browser checks of the UIs (HTTP endpoints answered)
+
+Fixed drift:
+
+- Avro 1.12 rejects generated classes outside trusted packages at runtime (`SecurityException: Forbidden ...`); the 6.2 producers and the `RecordNameStrategy` producer now set `org.apache.avro.SERIALIZABLE_PACKAGES`. Unit tests did not catch this.
+- `flink/datastream`: pinned `avro-maven-plugin` to 1.11.4, the Avro runtime that ships with Flink 2.3.0
+- `quarkus-producer-avro-and-headers`: removed a duplicate `quarkus-rest` dependency, which Maven 3.10 rejects
+- `kafka-standby`: moved off port 8081 (Schema Registry) to 7985 and documented how to start Unleash
+- Elasticsearch: disabled the disk watermark, a nearly full laptop disk otherwise leaves Kibana unavailable
 
 ## Verification snapshot (2026-03-25)
 

@@ -68,6 +68,7 @@ To stop all services:
 | Quarkus test server      | [7982](http://localhost:7982) | exercise         |
 | Quarkus http server 2    | [7983](http://localhost:7983) | exercise         |
 | Quarkus test server 2    | [7984](http://localhost:7984) | exercise         |
+| Kafka standby demo       | [7985](http://localhost:7985) | demo             |
 
 ## Dependabot auto-merge
 

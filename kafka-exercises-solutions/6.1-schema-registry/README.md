@@ -4,7 +4,7 @@ Use the exercise README for the full walkthrough:
 
 - `../../kafka-exercises/6.1-schema-registry/README.md`
 
-The validation path that was verified against the current `cp-schema-registry:8.2.0` image is:
+The validation path, verified against the `cp-schema-registry` image from the root `docker-compose.yml`, is:
 
 1. List subjects:
 

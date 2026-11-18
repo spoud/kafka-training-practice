@@ -33,6 +33,11 @@ updates:
       interval: "weekly"
   - package-ecosystem: "maven"
     target-branch: "updates"
+    directory: "/kafka-demos/kafka-standby"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
+    target-branch: "updates"
     directory: "/kafka-demos/java-read-avro-message-from-file"
     schedule:
       interval: "weekly"
@@ -66,6 +71,10 @@ updates:
     directory: "/kafka-demos/flink/datastream"
     schedule:
       interval: "weekly"
+    ignore:
+      # avro-maven-plugin must match the avro runtime shipped with flink-avro
+      - dependency-name: "org.apache.avro:avro-maven-plugin"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
   - package-ecosystem: "maven"
     target-branch: "updates"
     directory: "/kafka-exercises/3.1-java-client/java-consumer"

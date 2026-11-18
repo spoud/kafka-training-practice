@@ -2,7 +2,7 @@
 services:
 
   broker:
-    image: confluentinc/cp-kafka:8.2.0
+    image: confluentinc/cp-kafka:8.4.1
     hostname: broker
     container_name: broker
     ports:
@@ -29,7 +29,7 @@ services:
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:8.2.0
+    image: confluentinc/cp-schema-registry:8.4.1
     hostname: schema-registry
     container_name: schema-registry
     depends_on:
@@ -68,7 +68,7 @@ services:
 
   control-center:
     profiles: ["confluent", "full"]
-    image: confluentinc/cp-enterprise-control-center-next-gen:2.4.0
+    image: confluentinc/cp-enterprise-control-center-next-gen:2.7.0
     hostname: control-center
     container_name: control-center
     depends_on:
@@ -93,7 +93,7 @@ services:
 
   ksqldb-server:
     profiles: ["full"]
-    image: confluentinc/cp-ksqldb-server:8.2.0
+    image: confluentinc/cp-ksqldb-server:8.4.1
     hostname: ksqldb-server
     container_name: ksqldb-server
     depends_on:
@@ -117,7 +117,7 @@ services:
 
   ksqldb-cli:
     profiles: ["full"]
-    image: confluentinc/cp-ksqldb-cli:7.9.6
+    image: confluentinc/cp-ksqldb-cli:8.0.9
     container_name: ksqldb-cli
     depends_on:
       - broker
@@ -128,7 +128,7 @@ services:
 
   ksql-datagen:
     profiles: ["full"]
-    image: confluentinc/ksqldb-examples:7.9.6
+    image: confluentinc/ksqldb-examples:8.0.9
     hostname: ksql-datagen
     container_name: ksql-datagen
     depends_on:
@@ -151,7 +151,7 @@ services:
 
   rest-proxy:
     profiles: ["full"]
-    image: confluentinc/cp-kafka-rest:8.2.0
+    image: confluentinc/cp-kafka-rest:8.4.1
     depends_on:
       - broker
       - schema-registry

@@ -20,6 +20,8 @@ public class Producer {
     private static final Random random = new Random();
 
     public static void main(String[] args) throws InterruptedException {
+        // Avro 1.12 only deserializes classes from trusted packages, the generated records live in this one
+        System.setProperty("org.apache.avro.SERIALIZABLE_PACKAGES", "io.spoud.training");
         Properties props = new Properties();
         props.put(BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ACKS_CONFIG, "all");

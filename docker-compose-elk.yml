@@ -2,11 +2,13 @@
 services:
   elasticsearch:
     profiles: ["full"]
-    image: docker.elastic.co/elasticsearch/elasticsearch:9.3.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.5.6
     container_name: elasticsearch
     environment:
       - xpack.security.enabled=false
       - discovery.type=single-node
+      # do not block shard allocation on nearly full laptop disks
+      - cluster.routing.allocation.disk.threshold_enabled=false
     mem_limit: "4GB"
     ulimits:
       memlock:
@@ -26,7 +28,7 @@ services:
   kibana:
     profiles: ["full"]
     container_name: kibana
-    image: docker.elastic.co/kibana/kibana:9.3.2
+    image: docker.elastic.co/kibana/kibana:9.5.6
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     ports:
