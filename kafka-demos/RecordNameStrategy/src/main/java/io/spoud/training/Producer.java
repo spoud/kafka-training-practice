@@ -15,6 +15,8 @@ public class Producer
 {
     public static void main( String[] args )
     {
+        // Avro 1.12 only deserializes classes from trusted packages, the generated records live in this one
+        System.setProperty("org.apache.avro.SERIALIZABLE_PACKAGES", "io.spoud.training.recordnamestrategy");
 
         //java-batching-1 Create the producer
         Properties props = new Properties();

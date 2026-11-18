@@ -6,6 +6,8 @@ services:
     environment:
       - xpack.security.enabled=false
       - discovery.type=single-node
+      # do not block shard allocation on nearly full laptop disks
+      - cluster.routing.allocation.disk.threshold_enabled=false
     mem_limit: "4GB"
     ulimits:
       memlock:

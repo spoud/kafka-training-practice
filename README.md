@@ -43,6 +43,7 @@ docker compose up -d
 | Quarkus test server      | [7982](http://localhost:7982) |
 | Quarkus http server 2    | [7983](http://localhost:7983) |
 | Quarkus test server 2    | [7984](http://localhost:7984) |
+| Kafka standby demo       | [7985](http://localhost:7985) |
 | Kibana                   | [5601](http://localhost:5601) |
 | Elasticsearch            | [9200](http://localhost:9200) |
 | Flink Dashboard          | [8090](http://localhost:8090) |

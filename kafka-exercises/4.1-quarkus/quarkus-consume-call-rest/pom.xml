@@ -79,7 +79,6 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5-mockito</artifactId>
-      <version>3.40.1.2</version>
       <scope>test</scope>
     </dependency>
       <dependency>
