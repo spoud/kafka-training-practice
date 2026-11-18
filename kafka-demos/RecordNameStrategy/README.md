@@ -2,7 +2,7 @@
 
 ```bash
 
-docker compose -f docker-compose.yml -f docker-compose-akhq.yml up -d schema-registry akhq broker
+docker compose --profile full -f docker-compose.yml -f docker-compose-akhq.yml up -d schema-registry akhq broker
 
 curl localhost:8081/subjects
 

@@ -9,6 +9,9 @@ on:
       - ready_for_review
       - reopened
       - synchronize
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch: {}
 
 permissions:
   actions: read
@@ -16,15 +19,16 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: dependabot-auto-merge-${{ github.event.pull_request.number }}
-  cancel-in-progress: false
+  group: dependabot-auto-merge-${{ github.event.pull_request.number || 'sweep' }}
+  cancel-in-progress: true
 
 jobs:
   prepare:
-    runs-on: ubuntu-latest
     if: >
+      github.event_name == 'pull_request_target' &&
       github.event.pull_request.user.login == 'dependabot[bot]' &&
       !github.event.pull_request.draft
+    runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ secrets.DEPENDABOT_AUTOMERGE_TOKEN != '' && secrets.DEPENDABOT_AUTOMERGE_TOKEN || secrets.GITHUB_TOKEN }}
       HAS_AUTOMERGE_TOKEN: ${{ secrets.DEPENDABOT_AUTOMERGE_TOKEN != '' }}
@@ -114,85 +118,81 @@ jobs:
             echo "PR already approved."
           fi
 
+  # Runs on a schedule and merges every already-approved Dependabot PR
+  # sequentially, so ready PRs never compete for the same job slot.
   merge:
-    needs: prepare
-    if: needs.prepare.result == 'success'
+    if: github.event_name != 'pull_request_target'
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ secrets.DEPENDABOT_AUTOMERGE_TOKEN != '' && secrets.DEPENDABOT_AUTOMERGE_TOKEN || secrets.GITHUB_TOKEN }}
-      HAS_AUTOMERGE_TOKEN: ${{ secrets.DEPENDABOT_AUTOMERGE_TOKEN != '' }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
-      PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
       REPOSITORY: ${{ github.repository }}
     steps:
-      - name: Merge successful Dependabot PR
+      - name: Merge every approved Dependabot PR targeting updates
         run: |
           set -euo pipefail
 
-          current_head_sha="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json headRefOid -q .headRefOid)"
-          if [ "$current_head_sha" != "$PR_HEAD_SHA" ]; then
-            echo "PR head changed from $PR_HEAD_SHA to $current_head_sha; a newer workflow run will handle the merge."
+          pr_numbers="$(
+            gh pr list --repo "$REPOSITORY" --base updates --state open --limit 100 \
+              --json number,author,isDraft,reviewDecision \
+              --jq '[.[] | select(.author.is_bot == true and (.author.login | test("dependabot"; "i")) and .isDraft == false and .reviewDecision == "APPROVED")] | .[].number'
+          )"
+
+          if [ -z "$pr_numbers" ]; then
+            echo "No approved Dependabot PRs ready to merge."
             exit 0
           fi
 
-          wait_for_mergeable_state() {
-            local timeout_seconds=$((10 * 60))
-            local poll_interval=15
-            local deadline=$(( $(date +%s) + timeout_seconds ))
-            local merge_state=""
+          # Prime mergeStateStatus (computed asynchronously by GitHub) for every
+          # PR up front, then poll each one until it resolves.
+          for pr_number in $pr_numbers; do
+            gh pr view "$pr_number" --repo "$REPOSITORY" --json mergeStateStatus >/dev/null || true
+          done
+          sleep 10
 
-            while [ "$(date +%s)" -lt "$deadline" ]; do
-              merge_state="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json mergeStateStatus -q .mergeStateStatus)"
-              case "$merge_state" in
-                CLEAN|HAS_HOOKS|UNSTABLE)
-                  echo "PR is ready to merge (mergeStateStatus=$merge_state)."
-                  return 0
-                  ;;
-                BEHIND)
-                  gh pr comment "$PR_NUMBER" --repo "$REPOSITORY" --body "@dependabot rebase"
-                  echo "PR is behind updates; requested a Dependabot rebase."
-                  return 1
-                  ;;
-                *)
-                  echo "PR mergeability is still settling (mergeStateStatus=$merge_state)."
-                  sleep "$poll_interval"
-                  ;;
-              esac
+          for pr_number in $pr_numbers; do
+            echo "::group::PR #$pr_number"
+            merge_state="UNKNOWN"
+            for attempt in 1 2 3; do
+              merge_state="$(gh pr view "$pr_number" --repo "$REPOSITORY" --json mergeStateStatus -q .mergeStateStatus)"
+              [ "$merge_state" != "UNKNOWN" ] && break
+              [ "$attempt" -lt 3 ] && sleep 8
             done
-
-            echo "Timed out waiting for mergeable state (last mergeStateStatus=$merge_state)."
-            return 1
-          }
-
-          wait_for_mergeable_state
-
-          max_attempts=5
-          attempt=1
-          while [ "$attempt" -le "$max_attempts" ]; do
-            echo "Merge attempt $attempt of $max_attempts."
-
-            set +e
-            merge_output="$(gh pr merge --repo "$REPOSITORY" --squash --match-head-commit "$PR_HEAD_SHA" "$PR_NUMBER" 2>&1)"
-            merge_status=$?
-            set -e
-
-            if [ "$merge_status" -eq 0 ]; then
-              echo "$merge_output"
-              exit 0
-            fi
-
-            echo "$merge_output"
-
-            if grep -Fq "Base branch was modified" <<<"$merge_output"; then
-              if [ "$attempt" -eq "$max_attempts" ]; then
-                echo "Base branch kept moving during merge attempts."
-                exit 1
-              fi
-
-              wait_for_mergeable_state
-              attempt=$((attempt + 1))
-              continue
-            fi
-
-            exit "$merge_status"
+            case "$merge_state" in
+              CLEAN|HAS_HOOKS|UNSTABLE)
+                # A stale approval survives new commits (no branch protection
+                # on updates to dismiss it), so re-check the current head SHA's
+                # build result rather than trusting the earlier approval alone.
+                head_sha="$(gh pr view "$pr_number" --repo "$REPOSITORY" --json headRefOid -q .headRefOid)"
+                build_conclusion="$(
+                  gh api "repos/$REPOSITORY/actions/workflows/build.yaml/runs?event=pull_request&per_page=100" |
+                    jq -r --arg sha "$head_sha" '
+                      [.workflow_runs[] | select(.head_sha == $sha)]
+                      | sort_by(.created_at)
+                      | reverse
+                      | .[0].conclusion // "pending"
+                    '
+                )"
+                if [ "$build_conclusion" != "success" ]; then
+                  echo "PR #$pr_number build not successful for $head_sha (conclusion=$build_conclusion); skipping."
+                elif gh pr merge --repo "$REPOSITORY" --squash "$pr_number"; then
+                  echo "Merged PR #$pr_number."
+                else
+                  echo "Merge failed for PR #$pr_number; will retry next sweep."
+                fi
+                ;;
+              BEHIND|DIRTY)
+                # BEHIND: base moved past this PR. DIRTY: real conflict, often
+                # caused by an earlier PR in this same sweep landing first.
+                # Dependabot regenerates the diff against the new base either way.
+                gh pr comment "$pr_number" --repo "$REPOSITORY" --body "@dependabot rebase"
+                echo "PR #$pr_number is $merge_state against updates; requested a Dependabot rebase."
+                ;;
+              UNKNOWN)
+                echo "PR #$pr_number mergeability still unresolved after retries; will retry next sweep."
+                ;;
+              *)
+                echo "PR #$pr_number not ready (mergeStateStatus=$merge_state); skipping."
+                ;;
+            esac
+            echo "::endgroup::"
           done
