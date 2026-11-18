@@ -19,10 +19,11 @@ fi
 
 # Function to print usage and available profiles
 print_usage() {
-  echo "Usage: ./start.sh [--full] [--ui UI]"
+  echo "Usage: ./start.sh [--full] [--ui UI] [--pull]"
   echo ""
   echo "Flags:"
   echo "  --full     Also start extra services (connect, ksqldb, elk, flink, all UIs, etc.)"
+  echo "  --pull     Only download the images for the selected services, start nothing"
   echo ""
   echo "Available UI options (--ui):"
   echo "  none       (default) no UI"
@@ -34,6 +35,7 @@ print_usage() {
 # Parse arguments
 FULL=false
 UI="none"
+PULL=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -43,6 +45,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --full)
       FULL=true
+      shift
+      ;;
+    --pull)
+      PULL=true
       shift
       ;;
     --ui)
@@ -72,8 +78,6 @@ if [[ "$UI" != "none" && "$UI" != "akhq" && "$UI" != "redpanda" && "$UI" != "con
   exit 1
 fi
 
-echo "Starting Docker Compose services (full: $FULL, UI: $UI)"
-
 # Build profile flags
 PROFILE_FLAGS=()
 if [[ "$FULL" == true ]]; then
@@ -83,16 +87,26 @@ if [[ "$UI" != "none" ]]; then
   PROFILE_FLAGS+=(--profile "$UI")
 fi
 
+COMPOSE_ARGS=(
+  -f docker-compose.yml
+  -f docker-compose-akhq.yml
+  -f docker-compose-repanda-console.yml
+  -f docker-compose-elk.yml
+  -f docker-compose-flink.yml
+  -f docker-compose-kcat.yml
+  "${PROFILE_FLAGS[@]}"
+)
+
+if [[ "$PULL" == true ]]; then
+  echo "Pulling Docker images (full: $FULL, UI: $UI)"
+  $DOCKER_COMPOSE_COMMAND "${COMPOSE_ARGS[@]}" pull
+  exit 0
+fi
+
+echo "Starting Docker Compose services (full: $FULL, UI: $UI)"
+
 # Run Docker Compose
-$DOCKER_COMPOSE_COMMAND \
-  -f docker-compose.yml \
-  -f docker-compose-akhq.yml \
-  -f docker-compose-repanda-console.yml \
-  -f docker-compose-elk.yml \
-  -f docker-compose-flink.yml \
-  -f docker-compose-kcat.yml \
-  "${PROFILE_FLAGS[@]}" \
-  up -d
+$DOCKER_COMPOSE_COMMAND "${COMPOSE_ARGS[@]}" up -d
 
 # Print active URLs
 is_running() {

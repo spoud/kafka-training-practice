@@ -36,11 +36,16 @@ In this folder you find some resources to use in the exercises and demos in a ce
 # Full stack: all services + all UIs
 ./start.sh --full
 
+# Download the images ahead of time without starting anything (full stack: about 18 GB)
+./start.sh --pull --full
+
 # Help / all options
 ./start.sh --help
 ```
 
 After startup, the script prints the active URLs for your current configuration.
+
+> **Before the training:** run `./start.sh --pull --full` at home. It downloads all images (about 18 GB of disk space) so you don't have to fetch them over the course Wi-Fi. If disk space is tight, `./start.sh --pull` downloads only the core (Kafka, Schema Registry, kcat, about 1.5 GB).
 
 To stop all services:
 
