@@ -181,7 +181,7 @@ under the License.
 				<groupId>org.apache.avro</groupId>
 				<artifactId>avro-maven-plugin</artifactId>
 				<!-- must match the avro runtime pulled in by flink-avro (1.11.4 for Flink 2.3.0), 1.12.x generates code that needs a newer runtime -->
-				<version>1.11.4</version>
+				<version>1.11.5</version>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
